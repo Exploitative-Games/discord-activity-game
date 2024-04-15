@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"server-go/common"
-	"server-go/database"
 )
 
 type Cors struct {
@@ -36,18 +35,26 @@ func (c *Cors) Handle(pattern string, handler http.Handler) {
 func main() {
 
 	common.InitCache()
-	database.InitDB()
+	// database.InitDB()
 
 	mux := &Cors{http.NewServeMux()}
 
 	// mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 	// 	http.ServeFile(w, r, "game/index.html")
 	// })
+	// mux.Handle("/", http.FileServer(http.Dir("/game")))
+
+	// Serve the index.html file when the root ("/") path is accessed
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./game/index.html")
+	})
+	mux.Handle("/", http.FileServer(http.Dir("./game")))
+
+	// Serve other files in the "/game" directory when the "/game" path is accessed
+	// mux.Handle("./game/", http.StripPrefix("./game/", http.FileServer(http.Dir("./game"))))
 
 	// mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("website/static"))))
 	// mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("website/assets"))))
-
-	mux.Handle("/", http.FileServer(http.Dir("/game")))
 
 	mux.HandleFunc("/error", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "An Error occurred\n")

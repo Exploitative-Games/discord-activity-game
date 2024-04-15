@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"server-go/common"
 	"runtime"
+	"server-go/common"
+
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
@@ -24,7 +25,6 @@ func InitDB() {
 		pgdriver.WithDatabase(config.DB.Name),
 		pgdriver.WithTLSConfig(nil),
 	)), pgdialect.New())
-	
 
 	//DB.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
 
