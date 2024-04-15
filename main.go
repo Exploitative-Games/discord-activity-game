@@ -48,7 +48,7 @@ func main() {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./game/index.html")
 	})
-	mux.Handle("/", http.FileServer(http.Dir("./game")))
+	mux.Handle("./game/", http.StripPrefix("./game/", http.FileServer(http.Dir("./game"))))
 
 	// Serve other files in the "/game" directory when the "/game" path is accessed
 	// mux.Handle("./game/", http.StripPrefix("./game/", http.FileServer(http.Dir("./game"))))
