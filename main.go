@@ -40,12 +40,14 @@ func main() {
 
 	mux := &Cors{http.NewServeMux()}
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "website/index.html")
-	})
+	// mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	http.ServeFile(w, r, "game/index.html")
+	// })
 
-	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("website/static"))))
-	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("website/assets"))))
+	// mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("website/static"))))
+	// mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("website/assets"))))
+
+	mux.Handle("/", http.FileServer(http.Dir("/game")))
 
 	mux.HandleFunc("/error", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "An Error occurred\n")
