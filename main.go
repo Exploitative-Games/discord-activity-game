@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"server-go/common"
+	"server-go/routes"
 )
 
 type Cors struct {
@@ -48,8 +49,9 @@ func main() {
 
 	mux.Handle("/", http.FileServer(http.Dir("./debug")))
 
-	mux.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/auth", func(w http.ResponseWriter, r *http.Request) {
 		// Call routes.Auth function here
+		routes.Auth(w, r)
 	})
 
 	// Serve other files in the "/game" directory when the "/game" path is accessed

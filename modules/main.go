@@ -14,7 +14,7 @@ func ExchangeCode(code, redirectUri string) (*oauth2.Token, error) {
 
 	conf := &oauth2.Config{
 		Endpoint:     oauth2.Endpoint{},
-		Scopes:       []string{"identify"},
+		Scopes:       []string{"identify", "guilds"},
 		RedirectURL:  redirectUri,
 		ClientID:     common.Config.ClientId,
 		ClientSecret: common.Config.ClientSecret,
