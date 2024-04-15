@@ -15,6 +15,7 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	golang.org/x/crypto v0.0.0-20220511200225-c6db032c6c88 // indirect
+	golang.org/x/oauth2 v0.19.0
 	golang.org/x/sys v0.1.0 // indirect
 	mellium.im/sasl v0.2.1 // indirect
 )
