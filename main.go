@@ -40,25 +40,11 @@ func main() {
 
 	mux := &Cors{http.NewServeMux()}
 
-	// mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	http.ServeFile(w, r, "game/index.html")
-	// })
-	// mux.Handle("/", http.FileServer(http.Dir("/game")))
-
-	// Serve the index.html file when the root ("/") path is accessed
-
 	mux.Handle("/", http.FileServer(http.Dir("./debug")))
 
 	mux.HandleFunc("/api/auth", func(w http.ResponseWriter, r *http.Request) {
-		// Call routes.Auth function here
 		routes.Auth(w, r)
 	})
-
-	// Serve other files in the "/game" directory when the "/game" path is accessed
-	// mux.Handle("./game/", http.StripPrefix("./game/", http.FileServer(http.Dir("./game"))))
-
-	// mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("website/static"))))
-	// mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("website/assets"))))
 
 	mux.HandleFunc("/error", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "An Error occurred\n")
