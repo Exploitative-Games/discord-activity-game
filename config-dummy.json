@@ -1,0 +1,15 @@
+{
+    "api_endpoint": "https://discord.com/api/v10",
+    "db": {
+      "ip": "127.0.0.1:5432",
+      "user": "p",
+      "password": "1",
+      "db": "test"
+    },
+    "redirect_uri": "https://depending-reservations-experimental-headquarters.trycloudflare.com/api/auth",
+    "client_id": "1229029126980112476",
+    "client_secret": "",
+    "github_webhook_secret": "",
+    "origin": "http://192.168.0.101:4471",
+    "port": "4471"
+  }

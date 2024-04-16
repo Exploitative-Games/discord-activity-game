@@ -13,7 +13,11 @@ import (
 func ExchangeCode(code, redirectUri string) (*oauth2.Token, error) {
 
 	conf := &oauth2.Config{
-		Endpoint:     oauth2.Endpoint{},
+		Endpoint: oauth2.Endpoint{
+			AuthURL:   common.Config.ApiEndpoint + "/oauth2/authorize",
+			TokenURL:  common.Config.ApiEndpoint + "/oauth2/token",
+			AuthStyle: oauth2.AuthStyleInParams,
+		},
 		Scopes:       []string{"identify", "guilds"},
 		RedirectURL:  redirectUri,
 		ClientID:     common.Config.ClientId,
