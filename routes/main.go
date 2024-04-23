@@ -31,12 +31,23 @@ func WS(w http.ResponseWriter, r *http.Request) {
 	defer ws.Close()
 
 	authorized := false
-
+	
 	for {
+		// TODO make this code more organized and readable
 		// ReadMessage function is blocking so we wait for new message in endless loop
-		_, message, err := ws.ReadMessage()
+		msgType, message, err := ws.ReadMessage()
 		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				println("dropped connection")
+				return
+			}
+
 			println(err)
+			return
+		}
+
+		if msgType == websocket.CloseMessage {
+			// if we get close message we close the connection
 			return
 		}
 
@@ -48,7 +59,6 @@ func WS(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if !authorized && packet.Op != "auth" {
-			ws.WriteMessage(websocket.TextMessage, []byte("Unauthorized"))
 			// prevent non auth packets from being processed and drop connection if not authorized
 			return
 		}
