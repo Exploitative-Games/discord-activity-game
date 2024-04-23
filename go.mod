@@ -9,6 +9,12 @@ require (
 	github.com/uptrace/bun v1.2.1
 	github.com/uptrace/bun/dialect/pgdialect v1.2.1
 	github.com/uptrace/bun/driver/pgdriver v1.2.1
+	golang.org/x/oauth2 v0.19.0
+)
+
+require (
+	github.com/gorilla/websocket v1.5.1 // indirect
+	golang.org/x/net v0.21.0 // indirect
 )
 
 require (

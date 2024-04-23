@@ -26,6 +26,8 @@ func main() {
 
 	mux.Handle("/", http.FileServer(http.Dir("./game")))
 
+	mux.HandleFunc("/ws", routes.WS)
+
 	mux.HandleFunc("/api/auth", func(w http.ResponseWriter, r *http.Request) {
 		routes.Auth(w, r)
 	})
