@@ -40,7 +40,7 @@ func main() {
 
 	mux := &Cors{http.NewServeMux()}
 
-	mux.Handle("/", http.FileServer(http.Dir("./debug")))
+	mux.Handle("/", http.FileServer(http.Dir("./game")))
 
 	mux.HandleFunc("/api/auth", func(w http.ResponseWriter, r *http.Request) {
 		routes.Auth(w, r)
