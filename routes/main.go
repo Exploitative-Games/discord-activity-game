@@ -1,11 +1,10 @@
 package routes
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
-	"server-go/common"
-	"server-go/modules"
+	errors "server-go/errors"
+	"server-go/events"
 
 	"github.com/gorilla/websocket"
 )
@@ -13,16 +12,6 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
-}
-
-func Auth(w http.ResponseWriter, r *http.Request) (str string, err error) {
-	discordToken, err := modules.ExchangeCode(r.URL.Query().Get("code"), common.Config.RedirectUri)
-	json.NewEncoder(w).Encode(map[string]string{"access_token": discordToken.AccessToken})
-	if err != nil {
-		return "", err
-	}
-
-	return discordToken.AccessToken, nil
 }
 
 func WS(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +22,7 @@ func WS(w http.ResponseWriter, r *http.Request) {
 
 	// upgrade http con to websocket
 	ws, err := upgrader.Upgrade(w, r, nil)
-	
+
 	if err != nil {
 		println("an error occured while creating websocket" + err.Error())
 		return
@@ -41,15 +30,54 @@ func WS(w http.ResponseWriter, r *http.Request) {
 
 	defer ws.Close()
 
+	authorized := false
+
 	for {
 		// ReadMessage function is blocking so we wait for new message in endless loop
-		_, _, err := ws.ReadMessage()
+		_, message, err := ws.ReadMessage()
 		if err != nil {
 			println(err)
 			return
 		}
 
-		// this ones obvious
-		ws.WriteMessage(websocket.TextMessage, []byte("pong"))
+		packet, err := events.ParsePacket(message)
+
+		if err != nil {
+			// faulty packet, drop connection
+			return
+		}
+
+		if !authorized && packet.Op != "auth" {
+			ws.WriteMessage(websocket.TextMessage, []byte("Unauthorized"))
+			// prevent non auth packets from being processed and drop connection if not authorized
+			return
+		}
+
+		if packet.Op == "auth" && authorized {
+			// prevent multiple auth packets
+			return
+		}
+
+		res, err := events.ProcessPacket(packet)
+
+		if err != nil {
+			if errors.Is(err, errors.ErrInvalidCode) {
+				// if we fail authorization drop connection
+				return
+			} else {
+				res.Error = errors.ErrInternalServer.Error()
+				// lets not send faulty data if we have an error
+				res.Data = nil
+			}
+
+			println(err.Error()) // for debugging purposes, should switch to slog later
+		}
+
+		if packet.Op == "auth" {
+			authorized = true
+		}
+
+		// we send the response back to the client
+		ws.WriteJSON(res)
 	}
 }
