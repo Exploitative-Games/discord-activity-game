@@ -36,6 +36,7 @@ func (c *Cors) Handle(pattern string, handler http.Handler) {
 func main() {
 
 	common.InitCache()
+	// uncomment if you have a database set up
 	// database.InitDB()
 
 	mux := &Cors{http.NewServeMux()}
@@ -49,6 +50,8 @@ func main() {
 	mux.HandleFunc("/error", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "An Error occurred\n")
 	})
+
+	fmt.Printf("server started at http://localhost:%s\n", common.Config.Port)
 
 	err := http.ListenAndServe(":"+common.Config.Port, mux)
 	if errors.Is(err, http.ErrServerClosed) {
