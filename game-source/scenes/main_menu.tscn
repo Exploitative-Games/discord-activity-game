@@ -104,7 +104,7 @@ layout_mode = 2
 auto_translate_mode = 1
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Lorem ipsum"
+text = "Select a Room"
 
 [node name="New Room" type="Button" parent="Lobby Select/VBoxContainer/HBoxContainer2"]
 auto_translate_mode = 1
@@ -303,7 +303,7 @@ text = "Lorem ipsum"
 auto_translate_mode = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-text = "Lorem ipsum"
+text = "@Lorem ipsum"
 
 [node name="Loading Screen" type="Panel" parent="."]
 auto_translate_mode = 1

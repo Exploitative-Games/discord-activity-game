@@ -4,7 +4,7 @@ extends CanvasLayer
 @onready var join_button:Button = $"Lobby Select/VBoxContainer/HBoxContainer/Join"
 @onready var loading_screen:Panel = $"Loading Screen"
 
-var selected_lobby
+var selected_lobby:int
 var lobbies:Array[Global.Lobby]
 
 var lock = false
@@ -68,6 +68,7 @@ func _fetch_lobbies() -> void:
 
 func _ready() -> void:
 	list.item_selected.connect(Callable(self, "_on_item_selected"))
+	list.item_activated.connect(Callable(self, "_on_item_activated"))
 	Global.main_menu = self
 	
 	for panel in get_children():
@@ -86,6 +87,9 @@ func _ready() -> void:
 func _on_item_selected(i:int):
 	selected_lobby = i
 	join_button.disabled = lobbies[i].players.size() >= 2
+
+func _on_item_activated(i:int):
+	Global.load_lobby(lobbies[i])
 
 func _connect_signal(boxcon:BoxContainer, panel:Panel) -> void:
 	for button in boxcon.get_children():
