@@ -5,5 +5,5 @@ server-go
 artgallery
 *.py
 *.exe
-*.json
+# *.json
 artgallery2/

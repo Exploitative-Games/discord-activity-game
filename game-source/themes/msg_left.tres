@@ -1,0 +1,27 @@
+[gd_resource type="Theme" load_steps=3 format=4 uid="uid://b7chnusbff4s7"]
+
+[ext_resource type="FontFile" uid="uid://p8vrkv7p2l8x" path="res://assets/Quicksand-SemiBold.ttf" id="1_548n4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_68x6n"]
+content_margin_left = 51.0
+content_margin_top = 14.0
+content_margin_right = 18.0
+content_margin_bottom = 14.0
+bg_color = Color(0.780566, 0.802529, 0.880061, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.658929, 0.692594, 0.80142, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.101961)
+shadow_size = 4
+
+[resource]
+Label/colors/font_color = Color(0, 0, 0, 1)
+Label/font_sizes/font_size = 16
+Label/fonts/font = ExtResource("1_548n4")
+Label/styles/normal = SubResource("StyleBoxFlat_68x6n")

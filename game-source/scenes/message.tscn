@@ -1,0 +1,53 @@
+[gd_scene load_steps=5 format=4 uid="uid://br563hesnwrop"]
+
+[ext_resource type="Theme" uid="uid://b7chnusbff4s7" path="res://themes/msg_left.tres" id="1_o2k3h"]
+[ext_resource type="Script" path="res://scripts/message.gd" id="2_0by33"]
+
+[sub_resource type="Gradient" id="Gradient_yr4ja"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5vt6h"]
+gradient = SubResource("Gradient_yr4ja")
+fill_to = Vector2(0, 0)
+
+[node name="Message" type="Label"]
+auto_translate_mode = 1
+visible = false
+custom_minimum_size = Vector2(1, 1)
+layout_direction = 2
+offset_right = 123.0
+offset_bottom = 48.0
+size_flags_horizontal = 0
+theme = ExtResource("1_o2k3h")
+text = "fdsegg"
+script = ExtResource("2_0by33")
+
+[node name="Avatar Left" type="TextureRect" parent="."]
+auto_translate_mode = 1
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 1
+offset_left = 15.0
+offset_top = 12.0
+offset_right = 39.0
+offset_bottom = 36.0
+size_flags_vertical = 0
+texture = SubResource("GradientTexture2D_5vt6h")
+expand_mode = 1
+
+[node name="Avatar Right" type="TextureRect" parent="."]
+auto_translate_mode = 1
+visible = false
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -39.0
+offset_top = 12.0
+offset_right = -15.0
+offset_bottom = 36.0
+grow_horizontal = 0
+size_flags_vertical = 0
+texture = SubResource("GradientTexture2D_5vt6h")
+expand_mode = 1

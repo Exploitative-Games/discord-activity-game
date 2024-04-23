@@ -1,0 +1,363 @@
+[gd_scene load_steps=9 format=4 uid="uid://rbc13fu3e6c8"]
+
+[ext_resource type="Theme" uid="uid://p6unsuxp1vug" path="res://themes/main.tres" id="1_4tj32"]
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_cbrgg"]
+[ext_resource type="Theme" uid="uid://gkeyqye7jgjl" path="res://themes/negative.tres" id="3_62tl5"]
+[ext_resource type="Texture2D" uid="uid://dhew8ujihooa6" path="res://assets/refresh.png" id="3_v5alj"]
+[ext_resource type="Script" path="res://scripts/player_info.gd" id="4_i2ol8"]
+
+[sub_resource type="Gradient" id="Gradient_bnxe5"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vgkdg"]
+gradient = SubResource("Gradient_bnxe5")
+fill_to = Vector2(0, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rurxu"]
+
+[node name="Main Menu" type="CanvasLayer"]
+script = ExtResource("1_cbrgg")
+
+[node name="Main Menu" type="Panel" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -106.0
+offset_top = -119.5
+offset_right = 106.0
+offset_bottom = 119.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_4tj32")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Main Menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Main Menu/VBoxContainer"]
+layout_mode = 2
+text = "Lorem ipsum"
+
+[node name="Play" type="Button" parent="Main Menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Play"
+
+[node name="Settings" type="Button" parent="Main Menu/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_vertical = 3
+text = "Settings"
+
+[node name="Credits" type="Button" parent="Main Menu/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_vertical = 3
+text = "Credits"
+
+[node name="Lobby Select" type="Panel" parent="."]
+auto_translate_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -224.5
+offset_top = -161.0
+offset_right = 224.5
+offset_bottom = 161.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_4tj32")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Lobby Select"]
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Lobby Select/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Lobby Select/VBoxContainer/HBoxContainer2"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Select a Room"
+
+[node name="New Room" type="Button" parent="Lobby Select/VBoxContainer/HBoxContainer2"]
+auto_translate_mode = 1
+custom_minimum_size = Vector2(37.35, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 3
+text = "New Room"
+
+[node name="Refresh" type="Button" parent="Lobby Select/VBoxContainer/HBoxContainer2"]
+auto_translate_mode = 1
+custom_minimum_size = Vector2(37.35, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 3
+icon = ExtResource("3_v5alj")
+expand_icon = true
+
+[node name="ItemList" type="ItemList" parent="Lobby Select/VBoxContainer"]
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+item_count = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Lobby Select/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Join" type="Button" parent="Lobby Select/VBoxContainer/HBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Join
+"
+
+[node name="Back" type="Button" parent="Lobby Select/VBoxContainer/HBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("3_62tl5")
+text = "Back"
+
+[node name="Credits" type="Panel" parent="."]
+auto_translate_mode = 1
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -106.0
+offset_top = -119.5
+offset_right = 106.0
+offset_bottom = 119.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_4tj32")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Credits"]
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Credits/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "sgdfsgfsdhdfhsfhgıodsfıohwoegheowghıoewgoewewtwtwetegtewggwegwe"
+autowrap_mode = 3
+
+[node name="Back" type="Button" parent="Credits/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("3_62tl5")
+text = "Back"
+
+[node name="Create Room" type="Panel" parent="."]
+auto_translate_mode = 1
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -106.0
+offset_top = -81.0
+offset_right = 106.0
+offset_bottom = 81.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_4tj32")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Create Room"]
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Create Room/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Create Room"
+autowrap_mode = 3
+
+[node name="LineEdit" type="LineEdit" parent="Create Room/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Control" type="Control" parent="Create Room/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Create Room/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+
+[node name="Create" type="Button" parent="Create Room/VBoxContainer/HBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Create"
+
+[node name="Back" type="Button" parent="Create Room/VBoxContainer/HBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("3_62tl5")
+text = "Back"
+
+[node name="Player Info" type="Panel" parent="."]
+auto_translate_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -178.0
+offset_top = -101.0
+offset_right = 178.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+theme = ExtResource("1_4tj32")
+script = ExtResource("4_i2ol8")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Player Info"]
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Avatar" type="TextureRect" parent="Player Info/HBoxContainer"]
+layout_mode = 2
+texture = SubResource("GradientTexture2D_vgkdg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Player Info/HBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+
+[node name="name" type="Label" parent="Player Info/HBoxContainer/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxEmpty_rurxu")
+text = "Lorem ipsum"
+
+[node name="handle" type="Label" parent="Player Info/HBoxContainer/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "@Lorem ipsum"
+
+[node name="Loading Screen" type="Panel" parent="."]
+auto_translate_mode = 1
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -106.0
+offset_top = -64.0
+offset_right = 106.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(106, 64)
+size_flags_horizontal = 4
+theme = ExtResource("1_4tj32")
+
+[node name="Input Blocker" type="Control" parent="Loading Screen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1000.0
+offset_top = -1000.0
+offset_right = 788.0
+offset_bottom = 872.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_force_pass_scroll_events = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Loading Screen"]
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Loading Screen/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Loading..."
+autowrap_mode = 3
+
+[node name="Cancel" type="Button" parent="Loading Screen/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("3_62tl5")
+text = "Cancel"

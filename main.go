@@ -25,7 +25,11 @@ func main() {
 	
 	mux.Use(routes.CorsMiddleware)
 
-	mux.Handle("/", http.FileServer(http.Dir("website")))
+	mux.Handle("/", http.FileServer(http.Dir("./game")))
+
+	mux.HandleFunc("/api/auth", func(w http.ResponseWriter, r *http.Request) {
+		routes.Auth(w, r)
+	})
 
 	mux.HandleFunc("/error", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "An Error occurred\n")
