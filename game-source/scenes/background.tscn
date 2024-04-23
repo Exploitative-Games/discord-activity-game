@@ -1,0 +1,24 @@
+[gd_scene load_steps=7 format=4 uid="uid://b3rab3k74t34c"]
+
+[ext_resource type="Shader" path="res://shaders/background.gdshader" id="1_gmshj"]
+[ext_resource type="Texture2D" uid="uid://bormhofc1anec" path="res://assets/shapes.png" id="2_k1jwb"]
+[ext_resource type="Script" path="res://scripts/background.gd" id="3_of803"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f4phc"]
+shader = ExtResource("1_gmshj")
+
+[sub_resource type="QuadMesh" id="QuadMesh_khuj4"]
+size = Vector2(128, 128)
+
+[sub_resource type="MultiMesh" id="MultiMesh_2fx8o"]
+use_colors = true
+mesh = SubResource("QuadMesh_khuj4")
+
+[node name="Background" type="CanvasLayer"]
+layer = -20
+
+[node name="MultiMeshInstance2D" type="MultiMeshInstance2D" parent="."]
+material = SubResource("ShaderMaterial_f4phc")
+multimesh = SubResource("MultiMesh_2fx8o")
+texture = ExtResource("2_k1jwb")
+script = ExtResource("3_of803")

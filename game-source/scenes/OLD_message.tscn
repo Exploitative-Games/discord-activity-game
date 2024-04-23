@@ -1,0 +1,58 @@
+[gd_scene load_steps=5 format=4 uid="uid://cx2uegxbjcyyg"]
+
+[ext_resource type="Theme" uid="uid://p6unsuxp1vug" path="res://themes/main.tres" id="1_2dkr5"]
+
+[sub_resource type="Gradient" id="Gradient_yr4ja"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5vt6h"]
+gradient = SubResource("Gradient_yr4ja")
+fill_to = Vector2(0, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wd42s"]
+
+[node name="Message" type="Panel"]
+custom_minimum_size = Vector2(80, 61)
+offset_right = 80.0
+offset_bottom = 61.0
+theme = ExtResource("1_2dkr5")
+
+[node name="Avatar" type="TextureRect" parent="."]
+auto_translate_mode = 1
+custom_minimum_size = Vector2(31, 31)
+layout_mode = 2
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 46.0
+offset_bottom = 46.0
+size_flags_vertical = 0
+texture = SubResource("GradientTexture2D_5vt6h")
+expand_mode = 1
+
+[node name="Control" type="Control" parent="."]
+auto_translate_mode = 1
+custom_minimum_size = Vector2(1, 1)
+layout_direction = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 51.0
+offset_top = 15.0
+offset_right = -13.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="name" type="Label" parent="Control"]
+auto_translate_mode = 1
+layout_direction = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wd42s")
+text = "ewrtwe"
