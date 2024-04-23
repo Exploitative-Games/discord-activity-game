@@ -7,31 +7,12 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-chi/chi/v5"
+
 	"server-go/common"
 	"server-go/routes"
 )
 
-type Cors struct {
-	handler *http.ServeMux
-}
-
-func (c *Cors) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-
-	c.handler.ServeHTTP(w, r)
-}
-
-func (c *Cors) HandleFunc(pattern string, handler func(w http.ResponseWriter, r *http.Request)) {
-	c.handler.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-		handler(w, r)
-	})
-}
-
-func (c *Cors) Handle(pattern string, handler http.Handler) {
-	c.handler.Handle(pattern, handler)
-}
 
 func main() {
 
@@ -39,7 +20,9 @@ func main() {
 	// uncomment if you have a database set up
 	// database.InitDB()
 
-	mux := &Cors{http.NewServeMux()}
+	mux := chi.NewRouter()
+	
+	mux.Use(routes.CorsMiddleware)
 
 	mux.Handle("/", http.FileServer(http.Dir("./game")))
 
