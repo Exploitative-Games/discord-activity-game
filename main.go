@@ -27,6 +27,8 @@ func main() {
 
 	mux.HandleFunc("/ws", routes.WS)
 
+	mux.HandleFunc("/webhook", routes.Webhook)
+
 	mux.HandleFunc("/error", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "An Error occurred\n")
 	})

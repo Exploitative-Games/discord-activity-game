@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"server-go/common"
 	"server-go/modules/discord"
+
 	manager_module "server-go/modules/game_manager"
 
 	"github.com/gorilla/websocket"
@@ -94,4 +95,8 @@ func Authorize(ws *websocket.Conn) (token *oauth2.Token, err error) {
 	}
 
 	return
+}
+
+func Webhook(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Webhook hit")
 }

@@ -73,3 +73,38 @@ func (event *IncomingLeaveLobbyPacket) Process(client *Client) (interface{}, err
 
 	return OutgoingLeaveLobbyPacket{}, nil
 }
+
+type IncomingGetLobbyListPacket struct{}
+
+type OutgoingGetLobbyListPacket struct {
+	Lobbies map[int][]struct {
+		OwnerID     discord.UserID `json:"owner_id"`
+		PlayerCount int            `json:"player_count"`
+	} `json:"lobbies"`
+}
+
+
+func (event *IncomingGetLobbyListPacket) Process(client *Client) (interface{}, error) {
+	lobbies := make(map[int][]struct {
+		OwnerID     discord.UserID `json:"owner_id"`
+		PlayerCount int            `json:"player_count"`
+	})
+
+	for lobbyID, lobby := range client.manager.Lobbies {
+		if lobby.IsStarted {
+			continue
+		}
+		
+		lobbies[lobbyID] = []struct {
+			OwnerID     discord.UserID `json:"owner_id"`
+			PlayerCount int            `json:"player_count"`
+		}{
+			{
+				OwnerID:     lobby.OwnerID,
+				PlayerCount: len(lobby.Clients),
+			},
+		}
+	}
+
+	return OutgoingGetLobbyListPacket{Lobbies: lobbies}, nil
+}
