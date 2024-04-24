@@ -5,6 +5,8 @@ go 1.21
 toolchain go1.22.1
 
 require (
+	github.com/diamondburned/arikawa/v3 v3.3.5
+	github.com/gorilla/websocket v1.5.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/uptrace/bun v1.2.1
 	github.com/uptrace/bun/dialect/pgdialect v1.2.1
@@ -12,11 +14,7 @@ require (
 	golang.org/x/oauth2 v0.19.0
 )
 
-require (
-	github.com/diamondburned/arikawa/v3 v3.3.5 // indirect
-	github.com/gorilla/websocket v1.5.1 // indirect
-	golang.org/x/net v0.21.0 // indirect
-)
+require golang.org/x/net v0.21.0 // indirect
 
 require (
 	github.com/go-chi/chi/v5 v5.0.12
