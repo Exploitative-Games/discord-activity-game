@@ -21,7 +21,3 @@ type Packet struct {
 	Data  json.RawMessage `json:"d"`
 	Error string          `json:"e,omitempty"`
 }
-
-type Processor interface {
-	Process() (interface{}, error)
-}

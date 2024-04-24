@@ -1,6 +1,8 @@
 package modules
 
-import "server-go/common"
+import (
+	"server-go/common"
+)
 
 type Lobby struct {
 	OwnerID string

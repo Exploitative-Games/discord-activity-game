@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"server-go/common"
 	"server-go/events"
-	"server-go/modules"
 	"server-go/modules/discord"
+	manager_module "server-go/modules/game_manager"
 
 	"github.com/gorilla/websocket"
 	"golang.org/x/oauth2"
@@ -17,7 +17,7 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-var manager = modules.NewGameManager()
+var manager = manager_module.NewGameManager()
 
 func WS(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Websocket connection established")
@@ -50,7 +50,7 @@ func WS(w http.ResponseWriter, r *http.Request) {
 	}
 	// finally after all checks
 
-	client := modules.NewClient(manager, ws, token, discordUser)
+	client := manager_module.NewClient(manager, ws, token, discordUser)
 	manager.AddClient(client)
 
 	go client.ReadPump()
@@ -67,7 +67,7 @@ func Authorize(ws *websocket.Conn) (token *oauth2.Token, err error) {
 		return
 	}
 
-	packet, err := events.ParsePacket(message)
+	packet, err := common.ParsePacket(message)
 
 	if err != nil {
 		println("error while parsing packet")
@@ -80,7 +80,7 @@ func Authorize(ws *websocket.Conn) (token *oauth2.Token, err error) {
 	}
 
 	authPacket := events.IncomingAuthPacket{}
-	err = events.GetDataFromPacket(packet, &authPacket)
+	err = common.GetDataFromPacket(packet, &authPacket)
 
 	if err != nil {
 		println("faulty packet")

@@ -3,7 +3,6 @@ package modules
 import (
 	"server-go/common"
 	"server-go/errors"
-	"server-go/events"
 
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/gorilla/websocket"
@@ -57,14 +56,14 @@ func (c *Client) ReadPump() {
 			break
 		}
 
-		packet, err := events.ParsePacket(message)
+		packet, err := common.ParsePacket(message)
 
 		if err != nil {
 			// faulty packet, drop connection
 			return
 		}
 
-		res, err := events.ProcessPacket(packet)
+		res, err := ProcessPacket(c, packet)
 
 		if err != nil {
 			res.Error = errors.ErrInternalServer.Error()
