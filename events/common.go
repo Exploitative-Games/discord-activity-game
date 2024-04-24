@@ -16,6 +16,13 @@ func ParsePacket(i []byte) (packet common.Packet, err error) {
 	return packet, err
 }
 
+func GetDataFromPacket(inPacket common.Packet, v interface{}) (err error) {
+	if err = json.Unmarshal(inPacket.Data, v); err != nil {
+		err = errors.ErrInternalServer
+	}
+	return
+}
+
 func ProcessPacket(inPacket common.Packet) (outPacket common.Packet, err error) {
 	outPacket = common.Packet{Op: inPacket.Op}
 

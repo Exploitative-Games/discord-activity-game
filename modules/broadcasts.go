@@ -9,12 +9,12 @@ func (gm *GameManager) BroadcastToLobby(lobbyID int, packet *common.Packet) {
 	defer gm.Unlock()
 
 	lobby := gm.Lobbies[lobbyID]
-	
+
 	if lobby == nil {
 		return
 	}
 
-	for _, player := range lobby.Players {
-		player.conn.WriteJSON(packet)
+	for _, client := range lobby.Clients {
+		client.conn.WriteJSON(packet)
 	}
 }

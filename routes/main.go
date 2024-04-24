@@ -3,16 +3,21 @@ package routes
 import (
 	"fmt"
 	"net/http"
-	errors "server-go/errors"
+	"server-go/common"
 	"server-go/events"
+	"server-go/modules"
+	"server-go/modules/discord"
 
 	"github.com/gorilla/websocket"
+	"golang.org/x/oauth2"
 )
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 }
+
+var manager = modules.NewGameManager()
 
 func WS(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Websocket connection established")
@@ -28,66 +33,66 @@ func WS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	defer ws.Close()
+	token, err := Authorize(ws)
 
-	authorized := false
-	
-	for {
-		// TODO make this code more organized and readable
-		// ReadMessage function is blocking so we wait for new message in endless loop
-		msgType, message, err := ws.ReadMessage()
-		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				println("dropped connection")
-				return
-			}
-
-			println(err)
-			return
-		}
-
-		if msgType == websocket.CloseMessage {
-			// if we get close message we close the connection
-			return
-		}
-
-		packet, err := events.ParsePacket(message)
-
-		if err != nil {
-			// faulty packet, drop connection
-			return
-		}
-
-		if !authorized && packet.Op != "auth" {
-			// prevent non auth packets from being processed and drop connection if not authorized
-			return
-		}
-
-		if packet.Op == "auth" && authorized {
-			// prevent multiple auth packets
-			return
-		}
-
-		res, err := events.ProcessPacket(packet)
-
-		if err != nil {
-			if errors.Is(err, errors.ErrInvalidCode) {
-				// if we fail authorization drop connection
-				return
-			} else {
-				res.Error = errors.ErrInternalServer.Error()
-				// lets not send faulty data if we have an error
-				res.Data = nil
-			}
-
-			println(err.Error()) // for debugging purposes, should switch to slog later
-		}
-
-		if packet.Op == "auth" {
-			authorized = true
-		}
-
-		// we send the response back to the client
-		ws.WriteJSON(res)
+	if err != nil {
+		println("error while authorizing")
+		ws.Close()
+		return
 	}
+
+	discordUser, err := discord.GetDiscordUser(token.AccessToken)
+
+	if err != nil {
+		println("error while fetching user")
+		ws.Close()
+		return
+	}
+	// finally after all checks
+
+	client := modules.NewClient(manager, ws, token, discordUser)
+	manager.AddClient(client)
+
+	go client.ReadPump()
+	go client.WritePump()
+
+	client.SendPacket(events.OutgoingAuthPacket{AccessToken: token.AccessToken})
+}
+
+func Authorize(ws *websocket.Conn) (token *oauth2.Token, err error) {
+	_, message, err := ws.ReadMessage()
+
+	if err != nil {
+		println("error while reading message")
+		return
+	}
+
+	packet, err := events.ParsePacket(message)
+
+	if err != nil {
+		println("error while parsing packet")
+		return
+	}
+
+	if packet.Op != "auth" {
+		println("unauthorized connection")
+		return
+	}
+
+	authPacket := events.IncomingAuthPacket{}
+	err = events.GetDataFromPacket(packet, &authPacket)
+
+	if err != nil {
+		println("faulty packet")
+		return
+	}
+
+	token, err = discord.ExchangeCode(authPacket.Code, common.Config.RedirectUri)
+
+	if err != nil {
+		println("error while exchanging code")
+		return
+	}
+
+	return
 }

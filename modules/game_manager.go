@@ -4,43 +4,38 @@ import (
 	"math/rand/v2"
 	"server-go/common"
 	"sync"
-
-	"github.com/gorilla/websocket"
 )
-
-type Client struct {
-	lobby *Lobby
-
-	conn websocket.Conn
-
-	DiscordID common.Snowflake
-	Username  string
-	AvatarURL string
-
-	// channel to send messages to the client
-	send chan interface{}
-}
 
 type GameManager struct {
 	Lobbies map[int]*Lobby
-	Clients map[string]*Client
+	Clients map[common.Snowflake]*Client
 
 	sync.RWMutex
 }
 
-type Lobby struct {
-	OwnerID string
-	Players map[common.Snowflake]*Client
+func NewGameManager() *GameManager {
+	return &GameManager{
+		Lobbies: make(map[int]*Lobby),
+		Clients: make(map[common.Snowflake]*Client),
+	}
 }
 
-type Player struct {
-	DiscordID common.Snowflake
-	Username  string
-	AvatarURL string
+func (gm *GameManager) AddClient(client *Client) {
+	gm.Lock()
+	defer gm.Unlock()
+
+	gm.Clients[common.Snowflake(client.DiscordUser.ID)] = client
+}
+
+func (gm *GameManager) RemoveClient(client *Client) {
+	gm.Lock()
+	defer gm.Unlock()
+
+	delete(gm.Clients, common.Snowflake(client.DiscordUser.ID))
 }
 
 func (gm *GameManager) CreateLobby() int {
-	lobby := Lobby{Players: make(map[common.Snowflake]*Client)}
+	lobby := Lobby{Clients: make(map[common.Snowflake]*Client)}
 
 	// synchorize this operation so stupid stuff dont happen
 	gm.Lock()
@@ -65,22 +60,21 @@ func (gm *GameManager) DeleteLobby(id int) {
 	delete(gm.Lobbies, id)
 }
 
-func (gm *GameManager) AddPlayerToLobby(lobbyID int, client *Client) {
+func (gm *GameManager) AddClientToLobby(lobbyID int, client *Client) {
 	gm.Lock()
 	defer gm.Unlock()
 
 	lobby := gm.Lobbies[lobbyID]
 
-	lobby.Players[client.DiscordID] = client
+	lobby.Clients[common.Snowflake(client.DiscordUser.ID)] = client
 	client.lobby = lobby
 }
 
-func (gm *GameManager) RemovePlayerFromLobby(lobbyID int, client *Client) {
+func (gm *GameManager) RemoveClientFromLobby(lobbyID int, client *Client) {
 	gm.Lock()
 	defer gm.Unlock()
 
 	lobby := gm.Lobbies[lobbyID]
 
-	delete(lobby.Players, client.DiscordID)
+	delete(lobby.Clients, common.Snowflake(client.DiscordUser.ID))
 }
-

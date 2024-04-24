@@ -13,6 +13,7 @@ require (
 )
 
 require (
+	github.com/diamondburned/arikawa/v3 v3.3.5 // indirect
 	github.com/gorilla/websocket v1.5.1 // indirect
 	golang.org/x/net v0.21.0 // indirect
 )

@@ -1,9 +1,10 @@
 package events
 
 import (
-	errors "server-go/errors"
 	"server-go/common"
-	"server-go/modules"
+	errors "server-go/errors"
+
+	"server-go/modules/discord"
 )
 
 type IncomingAuthPacket struct {
@@ -15,7 +16,7 @@ type OutgoingAuthPacket struct {
 }
 
 func (event *IncomingAuthPacket) Process() (interface{}, error) {
-	discordToken, err := modules.ExchangeCode(event.Code, common.Config.RedirectUri)
+	discordToken, err := discord.ExchangeCode(event.Code, common.Config.RedirectUri)
 	if err != nil {
 		return OutgoingAuthPacket{}, errors.ErrInvalidCode
 	}
