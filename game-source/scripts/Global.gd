@@ -74,7 +74,7 @@ func _ready():
 	hreq.accept_gzip = false # funny issue: https://forum.godotengine.org/t/-/37681/19
 	add_child(hreq);
 	var token_res = hreq.request(
-		"https://" + CLIENT_ID + ".discordsays.com/api/auth" + "?code=" + auth["code"],
+		"https://" + CLIENT_ID + ".discordsays.com/api/auth?code=" + auth["code"],
 		["Content-Type: application/x-www-url-encoded"],
 		HTTPClient.METHOD_GET,
 	)
@@ -87,6 +87,7 @@ func _ready():
 	DiscordSDK.subscribe_to_events()
 	flag += 1
 	print("done")
+	GameSocket.start()
 
 func _user_updated(data):
 	user = User.new(
