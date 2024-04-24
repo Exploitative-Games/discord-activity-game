@@ -58,3 +58,18 @@ func (event *IncomingJoinLobbyPacket) Process(client *Client) (interface{}, erro
 
 	return OutgoingJoinLobbyPacket{Players: lobby.GetPlayers(), LobbyOwnerID: lobby.OwnerID}, nil
 }
+
+type IncomingLeaveLobbyPacket struct{}
+
+type OutgoingLeaveLobbyPacket struct{}
+
+func (event *IncomingLeaveLobbyPacket) Process(client *Client) (interface{}, error) {
+	if client.lobby == nil {
+		return OutgoingLeaveLobbyPacket{}, errors.New("client not in a lobby")
+	}
+
+	client.lobby.RemovePlayer(client)
+	client.lobby = nil
+
+	return OutgoingLeaveLobbyPacket{}, nil
+}

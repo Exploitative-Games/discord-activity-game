@@ -15,6 +15,7 @@ var typeMap = map[string]reflect.Type{
 	"auth":         reflect.TypeOf(IncomingAuthPacket{}),
 	"create_lobby": reflect.TypeOf(IncomingCreateLobbyPacket{}),
 	"join_lobby":   reflect.TypeOf(IncomingJoinLobbyPacket{}),
+	"leave_lobby":  reflect.TypeOf(IncomingLeaveLobbyPacket{}),
 }
 
 func ProcessPacket(client *Client, inPacket common.Packet) (outPacket common.Packet, err error) {
