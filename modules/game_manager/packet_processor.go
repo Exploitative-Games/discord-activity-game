@@ -5,7 +5,6 @@ import (
 	"reflect"
 	"server-go/common"
 	"server-go/errors"
-	"server-go/events"
 )
 
 type Processor interface {
@@ -13,7 +12,9 @@ type Processor interface {
 }
 
 var typeMap = map[string]reflect.Type{
-	"auth": reflect.TypeOf(events.IncomingAuthPacket{}),
+	"auth":         reflect.TypeOf(IncomingAuthPacket{}),
+	"create_lobby": reflect.TypeOf(IncomingCreateLobbyPacket{}),
+	"join_lobby":   reflect.TypeOf(IncomingJoinLobbyPacket{}),
 }
 
 func ProcessPacket(client *Client, inPacket common.Packet) (outPacket common.Packet, err error) {

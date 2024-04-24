@@ -34,7 +34,7 @@ func (gm *GameManager) RemoveClient(client *Client) {
 	delete(gm.Clients, common.Snowflake(client.DiscordUser.ID))
 }
 
-func (gm *GameManager) CreateLobby() int {
+func (gm *GameManager) CreateLobby() (int, *Lobby) {
 	lobby := Lobby{Clients: make(map[common.Snowflake]*Client)}
 
 	// synchorize this operation so stupid stuff dont happen
@@ -50,7 +50,7 @@ func (gm *GameManager) CreateLobby() int {
 
 	gm.Lobbies[lobbyID] = &lobby
 
-	return lobbyID
+	return lobbyID, &lobby
 }
 
 func (gm *GameManager) DeleteLobby(id int) {

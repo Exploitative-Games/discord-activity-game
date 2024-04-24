@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"server-go/common"
-	"server-go/events"
 	"server-go/modules/discord"
 	manager_module "server-go/modules/game_manager"
 
@@ -56,7 +55,7 @@ func WS(w http.ResponseWriter, r *http.Request) {
 	go client.ReadPump()
 	go client.WritePump()
 
-	client.SendPacket(events.OutgoingAuthPacket{AccessToken: token.AccessToken})
+	client.SendPacket(manager_module.OutgoingAuthPacket{AccessToken: token.AccessToken, User: discordUser})
 }
 
 func Authorize(ws *websocket.Conn) (token *oauth2.Token, err error) {
@@ -79,7 +78,7 @@ func Authorize(ws *websocket.Conn) (token *oauth2.Token, err error) {
 		return
 	}
 
-	authPacket := events.IncomingAuthPacket{}
+	authPacket := manager_module.IncomingAuthPacket{}
 	err = common.GetDataFromPacket(packet, &authPacket)
 
 	if err != nil {
