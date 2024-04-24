@@ -1,8 +1,28 @@
-[gd_scene load_steps=4 format=4 uid="uid://dk7rhqw6cjur4"]
+[gd_scene load_steps=4 format=4 uid="uid://diorcs8ccb1a7"]
 
 [ext_resource type="Theme" uid="uid://p6unsuxp1vug" path="res://themes/main.tres" id="1_1m1n6"]
-[ext_resource type="Script" path="res://scripts/Button.gd" id="1_f4umk"]
 [ext_resource type="Texture2D" uid="uid://ol56uqorch4u" path="res://icon.svg" id="2_nw56h"]
+
+[sub_resource type="GDScript" id="GDScript_gtu7g"]
+script/source = "extends Button
+
+var count := 0;
+
+func _ready() -> void:
+	Global.label = $\"../Label\"
+	Global.button = self
+
+func _user_updated(data):
+	Global.label.text = str(data)
+	if (data.global_name != null):
+		Global.label.text = data[\"global_name\"] + \" (@\" + data[\"username\"] + \")\"
+	else:
+		Global.label.text = data[\"username\"] + \" (@\" + data[\"username\"] + \")\"
+
+func _pressed():
+	count += 1;
+	text = str(count);
+"
 
 [node name="Node2D" type="Node2D"]
 
@@ -13,7 +33,7 @@ offset_right = 669.0
 offset_bottom = 310.0
 theme = ExtResource("1_1m1n6")
 text = "0"
-script = ExtResource("1_f4umk")
+script = SubResource("GDScript_gtu7g")
 
 [node name="Label" type="Label" parent="."]
 offset_left = 442.0

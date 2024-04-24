@@ -1,0 +1,59 @@
+[gd_scene load_steps=4 format=4 uid="uid://l6rl06bxwj6b"]
+
+[ext_resource type="Script" path="res://scripts/initial_loading.gd" id="1_nau5b"]
+[ext_resource type="Theme" uid="uid://p6unsuxp1vug" path="res://themes/main.tres" id="2_deh3x"]
+[ext_resource type="Texture2D" uid="uid://dhew8ujihooa6" path="res://assets/refresh.png" id="3_714lf"]
+
+[node name="Initial Loading" type="CanvasLayer"]
+script = ExtResource("1_nau5b")
+
+[node name="Panel" type="Panel" parent="."]
+auto_translate_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -151.0
+offset_top = -52.0
+offset_right = 151.0
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_deh3x")
+
+[node name="Label" type="Label" parent="Panel"]
+auto_translate_mode = 1
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 20.0
+offset_right = -25.0
+offset_bottom = -45.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Initializing game..."
+autowrap_mode = 3
+
+[node name="Spinner" type="TextureRect" parent="Panel"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = -48.0
+offset_right = 16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(16, 16)
+texture = ExtResource("3_714lf")
+expand_mode = 1
+stretch_mode = 4
