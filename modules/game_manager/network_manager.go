@@ -11,15 +11,10 @@ import (
 
 type Client struct {
 	manager *GameManager
-
 	lobby *Lobby
-
 	conn *websocket.Conn
-
 	DiscordUser *discord.User
-
 	token *oauth2.Token
-
 	// channel to send messages to the client
 	send chan interface{}
 }
