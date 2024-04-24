@@ -7,7 +7,7 @@ const MSG_RIGHT = preload("res://themes/msg_right.tres")
 @onready var avatar_right: TextureRect = $"Avatar Right"
 
 enum Directions {Left, Right}
-@export var direction:Directions = 0:
+@export var direction:Directions = Directions.Left:
 	set(val):
 		if not is_inside_tree():
 			await tree_entered

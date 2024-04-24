@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 
 DiscordSDK="*res://addons/DiscordEmbeddedSDK/DiscordSDK.gd"
 Global="*res://scripts/Global.gd"
+GameSocket="*res://scripts/GameSocket.gd"
 Background="*res://scenes/background.tscn"
 
 [display]
