@@ -13,7 +13,6 @@ import (
 	"server-go/routes"
 )
 
-
 func main() {
 
 	common.InitCache()
@@ -21,10 +20,10 @@ func main() {
 	// database.InitDB()
 
 	mux := chi.NewRouter()
-	
+
 	mux.Use(routes.CorsMiddleware)
 
-	mux.Handle("/", http.FileServer(http.Dir("./game")))
+	mux.Handle("/*", http.FileServer(http.Dir("./game")))
 
 	mux.HandleFunc("/ws", routes.WS)
 
