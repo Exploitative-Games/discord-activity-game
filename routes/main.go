@@ -96,7 +96,3 @@ func Authorize(ws *websocket.Conn) (token *oauth2.Token, err error) {
 
 	return
 }
-
-func Webhook(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Webhook hit")
-}

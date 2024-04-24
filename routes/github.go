@@ -24,13 +24,13 @@ func ValidateSignature(body []byte, signatureHeader string) bool {
 }
 
 // stole it https://github.com/krzko/github-webhook-validator/blob/main/main.go
-func WebhookHandler(w http.ResponseWriter, r *http.Request) {
+func Webhook(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	
+
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
