@@ -40,7 +40,8 @@ func Webhook(w http.ResponseWriter, r *http.Request) {
 	signatureHeader := r.Header.Get("X-Hub-Signature-256")
 	if ValidateSignature(body, signatureHeader) {
 		w.Write([]byte("Payload Validated\n"))
-		
+		w.WriteHeader(http.StatusOK)
+
 		exec.Command("systemctl", "--user", "restart", "dcgame").Run()
 		println("Restarting server")
 	} else {
