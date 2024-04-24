@@ -1,3 +1,15 @@
+# my final form
+# im made of gold and so much more
+# a thousand power cords
+# a fucking werewolf in a lightning storm
+# im a machine on a mission
+# this is lightspeed i have no ignition yet
+# an imaginary life will tear right through a human flesh
+# i feel most real when im not myself
+# emancipated liberated from my human shell
+# salvation in a digital heaven
+# cause real life is hell
+
 extends Node
 
 signal auth_done
