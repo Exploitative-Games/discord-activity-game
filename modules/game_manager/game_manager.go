@@ -43,6 +43,8 @@ func (gm *GameManager) CreateLobby() (int, *Lobby) {
 
 	lobbyID := rand.Int()
 
+	lobby.ID = lobbyID
+	
 	// make sure we dont have a lobby with the same id
 	for gm.Lobbies[lobbyID] != nil {
 		lobbyID = rand.Int()

@@ -56,6 +56,10 @@ func (event *IncomingJoinLobbyPacket) Process(client *Client) (interface{}, erro
 
 	lobby.AddPlayer(client)
 
+	client.manager.BroadcastToLobby(client.lobby.ID, "player_joined", OutgoingLobbyPlayerLeftPacket{
+		Player: client.DiscordUser,
+	})
+
 	return OutgoingJoinLobbyPacket{Players: lobby.GetPlayers(), LobbyOwnerID: lobby.OwnerID}, nil
 }
 
@@ -69,9 +73,22 @@ func (event *IncomingLeaveLobbyPacket) Process(client *Client) (interface{}, err
 	}
 
 	client.lobby.RemovePlayer(client)
+
+	client.manager.BroadcastToLobby(client.lobby.ID, "player_left", OutgoingLobbyPlayerLeftPacket{
+		Player: client.DiscordUser,
+	})
+
 	client.lobby = nil
 
 	return OutgoingLeaveLobbyPacket{}, nil
+}
+
+type OutgoingLobbyPlayerJoinedPacket struct {
+	Player *discord.User `json:"player"`
+}
+
+type OutgoingLobbyPlayerLeftPacket struct {
+	Player *discord.User `json:"player"`
 }
 
 type IncomingGetLobbyListPacket struct{}
@@ -83,7 +100,6 @@ type OutgoingGetLobbyListPacket struct {
 	} `json:"lobbies"`
 }
 
-
 func (event *IncomingGetLobbyListPacket) Process(client *Client) (interface{}, error) {
 	lobbies := make(map[int][]struct {
 		OwnerID     discord.UserID `json:"owner_id"`
@@ -94,7 +110,7 @@ func (event *IncomingGetLobbyListPacket) Process(client *Client) (interface{}, e
 		if lobby.IsStarted {
 			continue
 		}
-		
+
 		lobbies[lobbyID] = []struct {
 			OwnerID     discord.UserID `json:"owner_id"`
 			PlayerCount int            `json:"player_count"`

@@ -7,6 +7,7 @@ import (
 )
 
 type Lobby struct {
+	ID        int
 	Clients   map[common.Snowflake]*Client
 	OwnerID   discord.UserID
 	IsStarted bool
