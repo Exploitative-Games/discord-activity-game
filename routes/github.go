@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os/exec"
 	"server-go/common"
+	"time"
 )
 
 // ValidateSignature validates the GitHub webhook signature
@@ -42,8 +43,12 @@ func Webhook(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Payload Validated\n"))
 		w.WriteHeader(http.StatusOK)
 
-		exec.Command("systemctl", "--user", "restart", "dcgame").Run()
 		println("Restarting server")
+		
+		time.AfterFunc(1*time.Second, func() {
+			exec.Command("systemctl", "--user", "restart", "dcgame").Run()
+		})
+
 	} else {
 		http.Error(w, "Unauthorized - Signature Mismatch", http.StatusUnauthorized)
 	}
