@@ -77,6 +77,7 @@ func (c *Client) WritePump() {
 		select {
 		case message, ok := <-c.send:
 			if !ok {
+				print("non ok status, websocket closed")
 				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}

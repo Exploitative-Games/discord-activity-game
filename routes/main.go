@@ -77,6 +77,7 @@ func Authorize(ws *websocket.Conn) (token *oauth2.Token, err error) {
 	}
 
 	if packet.Op != "auth" {
+		err = fmt.Errorf("unauthorized connection")
 		println("unauthorized connection")
 		return
 	}
