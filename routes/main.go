@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"server-go/common"
@@ -56,7 +57,8 @@ func WS(w http.ResponseWriter, r *http.Request) {
 	go client.ReadPump()
 	go client.WritePump()
 
-	client.SendPacket(manager_module.OutgoingAuthPacket{AccessToken: token.AccessToken, User: discordUser})
+	authPacket, _ := json.Marshal(manager_module.OutgoingAuthPacket{AccessToken: token.AccessToken, User: discordUser})
+	client.SendPacket(common.Packet{Op: "auth", Data: authPacket})
 }
 
 func Authorize(ws *websocket.Conn) (token *oauth2.Token, err error) {

@@ -29,7 +29,7 @@ func NewClient(manager *GameManager, conn *websocket.Conn, token *oauth2.Token, 
 	}
 }
 
-func (c *Client) SendPacket(packet interface{}) {
+func (c *Client) SendPacket(packet common.Packet) {
 	c.send <- packet
 }
 
