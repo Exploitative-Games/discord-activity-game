@@ -1,5 +1,10 @@
 extends Node
 
+signal create_lobby_received
+signal join_lobby_received
+signal leave_lobby_received
+signal get_lobby_list_received
+
 @onready var sock:WebSocketPeer
 
 var TOKEN:String # scary
@@ -17,7 +22,7 @@ func start() -> void:
 			break
 		await get_tree().physics_frame
 	
-	authenticate()
+	_authenticate()
 	
 	while true:
 		sock.poll()
@@ -57,6 +62,7 @@ func _send_request(req:Dictionary) -> void:
 func _get_response() -> Dictionary:
 	var str := sock.get_packet().get_string_from_ascii()
 	var parsed := JSON.parse_string(str) as Dictionary
+	emit_signal(parsed["op"] + "_received", parsed["d"])
 	return parsed
 
 func _dict_to_user(data:Dictionary) -> Global.User:
@@ -68,7 +74,7 @@ func _dict_to_user(data:Dictionary) -> Global.User:
 	)
 	return user
 
-func authenticate():
+func _authenticate():
 	DiscordSDK.init(Global.CLIENT_ID)
 	await DiscordSDK.dispatch_ready
 	var auth = await DiscordSDK.command_authorize("code", ["identify", "guilds"], "")
@@ -81,12 +87,15 @@ func authenticate():
 	sock.poll()
 	_send_request(req)
 
+# below are all the socket requests, remember to call them with "await"
+
 func create_lobby():
 	var req := {
 		"op": "create_lobby",
 		"d": {}
 	}
 	_send_request(req)
+	return await create_lobby_received
 
 func join_lobby(id:int):
 	var req := {
