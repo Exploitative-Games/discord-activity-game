@@ -27,13 +27,15 @@ func start() -> void:
 	while true:
 		sock.poll()
 		if sock.get_available_packet_count():
-			var res = _get_response()
+			var res := _get_response()
 			print("packet received: ", res)
-			TOKEN = res["access_token"]
-			Global.user = _dict_to_user(res["user"])
+			var d:Dictionary = res["d"]
+			TOKEN = d["access_token"]
+			Global.user = _dict_to_user(d["user"])
 			break
 		await get_tree().physics_frame
 	
+	await get_tree().physics_frame
 	Global.initialized.emit()
 	set_process(true)
 
@@ -44,6 +46,7 @@ func _process(delta: float) -> void:
 			while sock.get_available_packet_count():
 				print("packet: ", sock._get_respose())
 				var res = sock._get_respose()
+				emit_signal(res["op"] + "_received", res["d"])
 				print("packet received: ", res)
 		WebSocketPeer.STATE_CONNECTING:
 			pass
@@ -62,7 +65,6 @@ func _send_request(req:Dictionary) -> void:
 func _get_response() -> Dictionary:
 	var str := sock.get_packet().get_string_from_ascii()
 	var parsed := JSON.parse_string(str) as Dictionary
-	emit_signal(parsed["op"] + "_received", parsed["d"])
 	return parsed
 
 func _dict_to_user(data:Dictionary) -> Global.User:

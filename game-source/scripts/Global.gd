@@ -14,6 +14,7 @@ extends Node
 
 signal initialized
 signal lobby_loaded
+signal avatar_loaded
 
 var main_menu:CanvasLayer
 
@@ -24,7 +25,6 @@ const CLIENT_ID = "1229029126980112476"
 #var button:Button
 var user:User = null
 var lobby:Lobby = null
-var temp_image:ImageTexture
 var load_cancel_flag:bool = false
 
 class User:
@@ -96,3 +96,22 @@ func _loading_screen() -> void:
 func _join_lobby() -> void:
 	await get_tree().create_timer(2.0).timeout
 	lobby_loaded.emit()
+
+func get_avatar(user:User) -> Texture2D:
+	var url := "https://cdn.discordapp.com/avatars/%d/%s.png?size=256" % [user.id, user.avatar]
+	print("fetching the image from: ", url)
+	var hreq := HTTPRequest.new()
+	add_child(hreq)
+	hreq.request(url)
+	hreq.request_completed.connect(Callable(self, "_create_avatar_image"))
+	var av:Texture2D = await avatar_loaded
+	hreq.queue_free()
+	return av
+
+func _create_avatar_image(res, _code, _headers, body) -> void:
+	if res != HTTPRequest.RESULT_SUCCESS: print("error at fetching, code: ", res)
+	var img := Image.new()
+	img.load_png_from_buffer(body)
+	var tex : = ImageTexture.new()
+	tex.create_from_image(img)
+	avatar_loaded.emit(tex)
