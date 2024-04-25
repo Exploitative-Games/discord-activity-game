@@ -1,9 +1,9 @@
 extends Node
 
-signal create_lobby_received
-signal join_lobby_received
-signal leave_lobby_received
-signal get_lobby_list_received
+signal create_lobby_received(res:Dictionary)
+signal join_lobby_received(res:Dictionary)
+signal leave_lobby_received(res:Dictionary)
+signal get_lobby_list_received(res:Dictionary)
 
 @onready var sock:WebSocketPeer
 
@@ -31,7 +31,7 @@ func start() -> void:
 			print("packet received: ", res)
 			var d:Dictionary = res["d"]
 			TOKEN = d["access_token"]
-			Global.user = _dict_to_user(d["user"])
+			Global.user = dict_to_user(d["user"])
 			break
 		await get_tree().physics_frame
 	
@@ -44,8 +44,8 @@ func _process(delta: float) -> void:
 	match sock.get_ready_state():
 		WebSocketPeer.STATE_OPEN:
 			while sock.get_available_packet_count():
-				print("packet: ", sock._get_respose())
-				var res = sock._get_respose()
+				var res = _get_response()
+				print("packet: ", res)
 				emit_signal(res["op"] + "_received", res["d"])
 				print("packet received: ", res)
 		WebSocketPeer.STATE_CONNECTING:
@@ -67,7 +67,7 @@ func _get_response() -> Dictionary:
 	var parsed := JSON.parse_string(str) as Dictionary
 	return parsed
 
-func _dict_to_user(data:Dictionary) -> Global.User:
+func dict_to_user(data:Dictionary) -> Global.User:
 	var user:Global.User = Global.User.new(
 		data["username"] if (data.global_name == "") else data["global_name"],
 		data["username"],
@@ -91,7 +91,7 @@ func _authenticate():
 
 # below are all the socket requests, remember to call them with "await"
 
-func create_lobby():
+func create_lobby() -> Dictionary:
 	var req := {
 		"op": "create_lobby",
 		"d": {}
@@ -99,7 +99,7 @@ func create_lobby():
 	_send_request(req)
 	return await create_lobby_received
 
-func join_lobby(id:int):
+func join_lobby(id:int) -> Dictionary:
 	var req := {
 		"op": "join_lobby",
 		"d": {
@@ -107,17 +107,20 @@ func join_lobby(id:int):
 		}
 	}
 	_send_request(req)
+	return await join_lobby_received
 
-func leave_lobby():
+func leave_lobby() -> Dictionary:
 	var req := {
 		"op": "leave_lobby",
 		"d": {}
 	}
 	_send_request(req)
+	return await leave_lobby_received
 
-func get_lobby_list():
+func get_lobby_list() -> Dictionary:
 	var req := {
 		"op": "get_lobby_list",
 		"d": {}
 	}
 	_send_request(req)
+	return await get_lobby_list_received

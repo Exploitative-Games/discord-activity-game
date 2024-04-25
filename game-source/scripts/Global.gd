@@ -66,8 +66,18 @@ func _ready():
 	print("start")
 	await GameSocket.start()
 
-func create_lobby(room_name:String) -> Lobby: #todo
-	var lobby:Lobby = Lobby.new(room_name, [user], 0)
+func create_lobby(_room_name:String) -> Lobby:
+	#var lobby:Lobby = Lobby.new(room_name, [user], 0)
+	var res := await GameSocket.create_lobby()
+	var room_name := "(%d/2) "
+	var players:Array[User] = []
+	if res["players"].size >= 1:
+		players.append(GameSocket.dict_to_user(res["players"][0]))
+		room_name += players[0].name
+	if res["players"].size >= 2:
+		players.append(GameSocket.dict_to_user(res["players"][1]))
+		room_name += players[1].name
+	var lobby := Lobby.new("", players, res["lobby_id"])
 	return lobby
 
 func load_lobby(lobby:Lobby) -> void: #todo
@@ -113,5 +123,4 @@ func _create_avatar_image(res, _code, _headers, body) -> void:
 	var img := Image.new()
 	img.load_png_from_buffer(body)
 	var tex : = ImageTexture.create_from_image(img)
-
 	avatar_loaded.emit(tex)
