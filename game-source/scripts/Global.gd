@@ -112,6 +112,6 @@ func _create_avatar_image(res, _code, _headers, body) -> void:
 	if res != HTTPRequest.RESULT_SUCCESS: print("error at fetching, code: ", res)
 	var img := Image.new()
 	img.load_png_from_buffer(body)
-	var tex : = ImageTexture.new()
-	tex.create_from_image(img)
+	var tex : = ImageTexture.create_from_image(img)
+
 	avatar_loaded.emit(tex)
