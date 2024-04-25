@@ -23,6 +23,7 @@ func start() -> void:
 		sock.poll()
 		if sock.get_available_packet_count():
 			var res = _get_response()
+			print("packet received: ", res)
 			TOKEN = res["access_token"]
 			Global.user = _dict_to_user(res["user"])
 			break
@@ -37,6 +38,8 @@ func _process(delta: float) -> void:
 		WebSocketPeer.STATE_OPEN:
 			while sock.get_available_packet_count():
 				print("packet: ", sock._get_respose())
+				var res = sock._get_respose()
+				print("packet received: ", res)
 		WebSocketPeer.STATE_CONNECTING:
 			pass
 		WebSocketPeer.STATE_CLOSING:
@@ -76,4 +79,34 @@ func authenticate():
 		}
 	}
 	sock.poll()
+	_send_request(req)
+
+func create_lobby():
+	var req := {
+		"op": "create_lobby",
+		"d": {}
+	}
+	_send_request(req)
+
+func join_lobby(id:int):
+	var req := {
+		"op": "join_lobby",
+		"d": {
+			"lobby_id": id
+		}
+	}
+	_send_request(req)
+
+func leave_lobby():
+	var req := {
+		"op": "leave_lobby",
+		"d": {}
+	}
+	_send_request(req)
+
+func get_lobby_list():
+	var req := {
+		"op": "get_lobby_list",
+		"d": {}
+	}
 	_send_request(req)
