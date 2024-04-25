@@ -6,13 +6,12 @@
 [ext_resource type="Texture2D" uid="uid://dhew8ujihooa6" path="res://assets/refresh.png" id="3_v5alj"]
 [ext_resource type="Script" path="res://scripts/player_info.gd" id="4_i2ol8"]
 
-[sub_resource type="Gradient" id="Gradient_bnxe5"]
+[sub_resource type="Gradient" id="Gradient_bnlce"]
 offsets = PackedFloat32Array(0)
 colors = PackedColorArray(0, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_vgkdg"]
-gradient = SubResource("Gradient_bnxe5")
-fill_to = Vector2(0, 0)
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_hfubo"]
+gradient = SubResource("Gradient_bnlce")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rurxu"]
 
@@ -147,6 +146,14 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("3_62tl5")
 text = "Back"
+
+[node name="Debug" type="Button" parent="Lobby Select/VBoxContainer/HBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("3_62tl5")
+text = "Debug"
 
 [node name="Credits" type="Panel" parent="."]
 auto_translate_mode = 1
@@ -286,7 +293,7 @@ grow_vertical = 2
 
 [node name="Avatar" type="TextureRect" parent="Player Info/HBoxContainer"]
 layout_mode = 2
-texture = SubResource("GradientTexture2D_vgkdg")
+texture = SubResource("GradientTexture2D_hfubo")
 expand_mode = 2
 stretch_mode = 4
 
