@@ -36,7 +36,7 @@ func (c *Client) SendPacket(packet common.Packet) {
 
 func (c *Client) ReadPump() {
 	defer func() {
-		c.lobby.RemovePlayer(c)
+		c.manager.RemoveClientFromLobby(c.lobby.ID, c)
 		c.send <- common.Packet{Op: "disconnect", Data: nil}
 		c.conn.Close()
 	}()

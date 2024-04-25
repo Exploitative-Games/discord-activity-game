@@ -33,6 +33,7 @@ func (event *IncomingCreateLobbyPacket) Process(client *Client) (interface{}, er
 	lobbyId, lobby := client.manager.CreateLobby()
 
 	lobby.AddPlayer(client)
+	lobby.OwnerID = client.DiscordUser.ID
 
 	return OutgoingCreateLobbyPacket{LobbyID: lobbyId, Players: lobby.GetPlayers(), LobbyOwnerID: client.DiscordUser.ID}, nil
 }

@@ -79,4 +79,8 @@ func (gm *GameManager) RemoveClientFromLobby(lobbyID int, client *Client) {
 	lobby := gm.Lobbies[lobbyID]
 
 	delete(lobby.Clients, common.Snowflake(client.DiscordUser.ID))
+
+	if len(lobby.Clients) == 0 {
+		gm.DeleteLobby(lobbyID)
+	}
 }
