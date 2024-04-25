@@ -2,6 +2,7 @@ package modules
 
 import (
 	"errors"
+	"server-go/common"
 	"server-go/modules/discord_utils"
 
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -12,16 +13,16 @@ type IncomingAuthPacket struct {
 }
 
 type OutgoingAuthPacket struct {
-	AccessToken string        `json:"access_token"`
+	AccessToken string              `json:"access_token"`
 	User        *discord_utils.User `json:"user"`
 }
 
 type IncomingCreateLobbyPacket struct{}
 
 type OutgoingCreateLobbyPacket struct {
-	LobbyID      int             `json:"lobby_id"`
+	LobbyID      int                   `json:"lobby_id"`
 	Players      []*discord_utils.User `json:"players"`
-	LobbyOwnerID discord.UserID  `json:"lobby_owner_id"`
+	LobbyOwnerID discord.UserID        `json:"lobby_owner_id"`
 }
 
 func (event *IncomingCreateLobbyPacket) Process(client *Client) (interface{}, error) {
@@ -42,7 +43,7 @@ type IncomingJoinLobbyPacket struct {
 
 type OutgoingJoinLobbyPacket struct {
 	Players      []*discord_utils.User `json:"players"`
-	LobbyOwnerID discord.UserID  `json:"lobby_owner_id"`
+	LobbyOwnerID discord.UserID        `json:"lobby_owner_id"`
 }
 
 func (event *IncomingJoinLobbyPacket) Process(client *Client) (interface{}, error) {
@@ -95,16 +96,16 @@ type OutgoingLobbyPlayerLeftPacket struct {
 type IncomingGetLobbyListPacket struct{}
 
 type OutgoingGetLobbyListPacket struct {
-	Lobbies map[int][]struct {
-		OwnerID     discord.UserID `json:"owner_id"`
-		PlayerCount int            `json:"player_count"`
+	Lobbies map[int]struct {
+		Owner       *discord_utils.User `json:"owner"`
+		PlayerCount int                 `json:"player_count"`
 	} `json:"lobbies"`
 }
 
 func (event *IncomingGetLobbyListPacket) Process(client *Client) (interface{}, error) {
-	lobbies := make(map[int][]struct {
-		OwnerID     discord.UserID `json:"owner_id"`
-		PlayerCount int            `json:"player_count"`
+	lobbies := make(map[int]struct {
+		Owner       *discord_utils.User `json:"owner"`
+		PlayerCount int                 `json:"player_count"`
 	})
 
 	for lobbyID, lobby := range client.manager.Lobbies {
@@ -112,14 +113,12 @@ func (event *IncomingGetLobbyListPacket) Process(client *Client) (interface{}, e
 			continue
 		}
 
-		lobbies[lobbyID] = []struct {
-			OwnerID     discord.UserID `json:"owner_id"`
-			PlayerCount int            `json:"player_count"`
+		lobbies[lobbyID] = struct {
+			Owner       *discord_utils.User `json:"owner"`
+			PlayerCount int                 `json:"player_count"`
 		}{
-			{
-				OwnerID:     lobby.OwnerID,
-				PlayerCount: len(lobby.Clients),
-			},
+			Owner:       lobby.Clients[common.Snowflake(lobby.OwnerID)].DiscordUser,
+			PlayerCount: len(lobby.Clients),
 		}
 	}
 
