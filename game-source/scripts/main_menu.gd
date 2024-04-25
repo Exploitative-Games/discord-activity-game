@@ -50,7 +50,7 @@ func _fetch_lobbies() -> void:
 	
 	var res := await GameSocket.get_lobby_list()
 	for id in res.keys():
-		var lobby:Dictionary = res["id"]
+		var lobby:Dictionary = res[id]
 		var room_name := "(%d/2) "
 		var players:Array[Global.User] = []
 		if lobby["players"].size >= 1:
