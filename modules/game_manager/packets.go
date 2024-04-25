@@ -2,7 +2,6 @@ package modules
 
 import (
 	"errors"
-	"server-go/common"
 	"server-go/modules/discord_utils"
 
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -97,28 +96,28 @@ type OutgoingLobbyPlayerLeftPacket struct {
 type IncomingGetLobbyListPacket struct{}
 
 type OutgoingGetLobbyListPacket struct {
-	Lobbies map[int]struct {
-		Owner       *discord_utils.User `json:"owner"`
-		PlayerCount int                 `json:"player_count"`
-	} `json:"lobbies"`
+	Lobbies map[int]LobbyEntry `json:"lobbies"`
+}
+
+type LobbyEntry struct {
+	OwnerID     discord.UserID        `json:"owner_id"`
+	Players     []*discord_utils.User `json:"players"`
+	PlayerCount int                   `json:"player_count"`
 }
 
 func (event *IncomingGetLobbyListPacket) Process(client *Client) (interface{}, error) {
-	lobbies := make(map[int]struct {
-		Owner       *discord_utils.User `json:"owner"`
-		PlayerCount int                 `json:"player_count"`
-	})
+	// should maybe just use lobby object here instead of redeclaring the struct
+
+	lobbies := make(map[int]LobbyEntry)
 
 	for lobbyID, lobby := range client.manager.Lobbies {
 		if lobby.IsStarted {
 			continue
 		}
 
-		lobbies[lobbyID] = struct {
-			Owner       *discord_utils.User `json:"owner"`
-			PlayerCount int                 `json:"player_count"`
-		}{
-			Owner:       lobby.Clients[common.Snowflake(lobby.OwnerID)].DiscordUser,
+		lobbies[lobbyID] = LobbyEntry{
+			OwnerID:     lobby.OwnerID,
+			Players:     lobby.GetPlayers(),
 			PlayerCount: len(lobby.Clients),
 		}
 	}
