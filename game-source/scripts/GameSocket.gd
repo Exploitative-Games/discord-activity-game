@@ -45,7 +45,6 @@ func _process(delta: float) -> void:
 		WebSocketPeer.STATE_OPEN:
 			while sock.get_available_packet_count():
 				var res = _get_response()
-				print("packet: ", res)
 				emit_signal(res["op"] + "_received", res["d"])
 				print("packet received: ", res)
 		WebSocketPeer.STATE_CONNECTING:

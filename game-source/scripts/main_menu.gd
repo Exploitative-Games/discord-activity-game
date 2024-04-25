@@ -48,28 +48,18 @@ func _fetch_lobbies() -> void:
 	list.clear()
 	join_button.disabled = true
 	
-	#lobbies = [ # todo: a proper fetch
-		#Global.Lobby.new("gsdgsdgsdg", [
-			#Global.User.new("test", "handle", 4235325325262, "0")
-		#], 0),
-		#Global.Lobby.new("fetewyerhergerg", [
-			#Global.User.new("test1", "handle", 423534325325262, "0"),
-			#Global.User.new("test2", "handle", 124235325325262, "0")
-		#], 0),
-		#Global.Lobby.new("vgfwsgd", [], 0)
-	#]
-	
 	var res := await GameSocket.get_lobby_list()
-	for lobby in lobbies:
+	for id in res.keys():
+		var lobby:Dictionary = res["id"]
 		var room_name := "(%d/2) "
 		var players:Array[Global.User] = []
-		if res["players"].size >= 1:
-			players.append(GameSocket.dict_to_user(res["players"][0]))
+		if lobby["players"].size >= 1:
+			players.append(GameSocket.dict_to_user(lobby["players"][0]))
 			room_name += players[0].name
-		if res["players"].size >= 2:
-			players.append(GameSocket.dict_to_user(res["players"][1]))
+		if lobby["players"].size >= 2:
+			players.append(GameSocket.dict_to_user(lobby["players"][1]))
 			room_name += players[1].name
-		Global.Lobby.new(room_name, players, 0)
+		lobbies.append(Global.Lobby.new(room_name, players, id))
 	
 	for i in lobbies.size():
 		var item = lobbies[i]
