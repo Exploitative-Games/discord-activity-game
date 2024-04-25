@@ -1,4 +1,4 @@
-package discord
+package discord_utils
 
 import (
 	"context"
@@ -12,7 +12,15 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func GetDiscordUser(token string) (user *discord.User, err error) {
+type User struct {
+	ID            discord.UserID `json:"id"`
+	Username      string         `json:"username"`
+	Discriminator string         `json:"discriminator"` // This is "0" if the user has migrated to the new username system.
+	Avatar        discord.Hash   `json:"avatar"`
+	DisplayName   string         `json:"global_name"`
+}
+
+func GetDiscordUser(token string) (user *User, err error) {
 	req, _ := http.NewRequest(http.MethodGet, common.Config.ApiEndpoint+"/users/@me", nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+token)

@@ -2,6 +2,7 @@ package modules
 
 import (
 	"server-go/common"
+	"server-go/modules/discord_utils"
 
 	"github.com/diamondburned/arikawa/v3/discord"
 )
@@ -27,8 +28,8 @@ func (l *Lobby) IsOwner(client *Client) bool {
 	return client.DiscordUser.ID == l.OwnerID
 }
 
-func (l *Lobby) GetPlayers() []*discord.User {
-	players := make([]*discord.User, 0, len(l.Clients))
+func (l *Lobby) GetPlayers() []*discord_utils.User {
+	players := make([]*discord_utils.User, 0, len(l.Clients))
 
 	for _, client := range l.Clients {
 		players = append(players, client.DiscordUser)

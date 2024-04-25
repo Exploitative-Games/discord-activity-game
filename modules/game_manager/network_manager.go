@@ -4,22 +4,23 @@ import (
 	"server-go/common"
 	"server-go/errors"
 
-	"github.com/diamondburned/arikawa/v3/discord"
+	"server-go/modules/discord_utils"
+
 	"github.com/gorilla/websocket"
 	"golang.org/x/oauth2"
 )
 
 type Client struct {
-	manager *GameManager
-	lobby *Lobby
-	conn *websocket.Conn
-	DiscordUser *discord.User
-	token *oauth2.Token
+	manager     *GameManager
+	lobby       *Lobby
+	conn        *websocket.Conn
+	DiscordUser *discord_utils.User
+	token       *oauth2.Token
 	// channel to send messages to the client
 	send chan interface{}
 }
 
-func NewClient(manager *GameManager, conn *websocket.Conn, token *oauth2.Token, discordUser *discord.User) *Client {
+func NewClient(manager *GameManager, conn *websocket.Conn, token *oauth2.Token, discordUser *discord_utils.User) *Client {
 	return &Client{
 		manager:     manager,
 		conn:        conn,

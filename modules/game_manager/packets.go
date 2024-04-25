@@ -2,6 +2,7 @@ package modules
 
 import (
 	"errors"
+	"server-go/modules/discord_utils"
 
 	"github.com/diamondburned/arikawa/v3/discord"
 )
@@ -12,14 +13,14 @@ type IncomingAuthPacket struct {
 
 type OutgoingAuthPacket struct {
 	AccessToken string        `json:"access_token"`
-	User        *discord.User `json:"user"`
+	User        *discord_utils.User `json:"user"`
 }
 
 type IncomingCreateLobbyPacket struct{}
 
 type OutgoingCreateLobbyPacket struct {
 	LobbyID      int             `json:"lobby_id"`
-	Players      []*discord.User `json:"players"`
+	Players      []*discord_utils.User `json:"players"`
 	LobbyOwnerID discord.UserID  `json:"lobby_owner_id"`
 }
 
@@ -40,7 +41,7 @@ type IncomingJoinLobbyPacket struct {
 }
 
 type OutgoingJoinLobbyPacket struct {
-	Players      []*discord.User `json:"players"`
+	Players      []*discord_utils.User `json:"players"`
 	LobbyOwnerID discord.UserID  `json:"lobby_owner_id"`
 }
 
@@ -84,11 +85,11 @@ func (event *IncomingLeaveLobbyPacket) Process(client *Client) (interface{}, err
 }
 
 type OutgoingLobbyPlayerJoinedPacket struct {
-	Player *discord.User `json:"player"`
+	Player *discord_utils.User `json:"player"`
 }
 
 type OutgoingLobbyPlayerLeftPacket struct {
-	Player *discord.User `json:"player"`
+	Player *discord_utils.User `json:"player"`
 }
 
 type IncomingGetLobbyListPacket struct{}

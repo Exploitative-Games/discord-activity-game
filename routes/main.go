@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"server-go/common"
-	"server-go/modules/discord"
+	"server-go/modules/discord_utils"
 
 	manager_module "server-go/modules/game_manager"
 
@@ -42,7 +42,7 @@ func WS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	discordUser, err := discord.GetDiscordUser(token.AccessToken)
+	discordUser, err := discord_utils.GetDiscordUser(token.AccessToken)
 
 	if err != nil {
 		println("error while fetching user")
@@ -89,7 +89,7 @@ func Authorize(ws *websocket.Conn) (token *oauth2.Token, err error) {
 		return
 	}
 
-	token, err = discord.ExchangeCode(authPacket.Code, common.Config.RedirectUri)
+	token, err = discord_utils.ExchangeCode(authPacket.Code, common.Config.RedirectUri)
 
 	if err != nil {
 		println("error while exchanging code")
