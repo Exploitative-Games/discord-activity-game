@@ -4,10 +4,14 @@ signal create_lobby_received(res:Dictionary)
 signal join_lobby_received(res:Dictionary)
 signal leave_lobby_received(res:Dictionary)
 signal get_lobby_list_received(res:Dictionary)
+signal ping_received
 
 @onready var sock:WebSocketPeer
 
+const PING_INTERVAL:float = 5.0
+
 var TOKEN:String # scary
+var ping_timer:Timer
 
 func _ready() -> void:
 	set_process(false)
@@ -37,6 +41,14 @@ func start() -> void:
 	
 	await get_tree().physics_frame
 	Global.initialized.emit()
+	
+	ping_timer = Timer.new()
+	add_child(ping_timer)
+	ping_timer.wait_time = PING_INTERVAL
+	ping_timer.autostart = true
+	ping_timer.timeout.connect(Callable(self, "_ping"))
+	ping_timer.start()
+	
 	set_process(true)
 
 func _process(delta: float) -> void:
@@ -75,7 +87,6 @@ func dict_to_user(data:Dictionary) -> Global.User:
 	)
 	return user
 
-
 func _authenticate():
 	var req := {
 		"op": "auth",
@@ -98,6 +109,16 @@ func _authenticate():
 	sock.poll()
 	_send_request(req)
 
+func _ping() -> void:
+	var req := {
+		"op": "ping",
+		"d": {}
+	}
+	_send_request(req)
+	var t := Time.get_ticks_msec()
+	await ping_received
+	print("[PING] delay: ", Time.get_ticks_msec() - t, "ms")
+
 # below are all the socket requests, remember to call them with "await"
 
 func create_lobby() -> Dictionary:
@@ -108,7 +129,7 @@ func create_lobby() -> Dictionary:
 	_send_request(req)
 	return await create_lobby_received
 
-func join_lobby(id:int) -> Dictionary:
+func join_lobby(id:int) -> void:
 	var req := {
 		"op": "join_lobby",
 		"d": {
@@ -116,7 +137,8 @@ func join_lobby(id:int) -> Dictionary:
 		}
 	}
 	_send_request(req)
-	return await join_lobby_received
+	await join_lobby_received
+	return
 
 func leave_lobby() -> Dictionary:
 	var req := {

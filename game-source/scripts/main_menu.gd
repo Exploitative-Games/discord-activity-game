@@ -144,7 +144,8 @@ func _lobby_select(button:String) -> void:
 		"Refresh":
 			await _fetch_lobbies()
 		"Debug":
-			GameSocket.create_lobby()
+			var lobby := await Global.create_lobby()
+			Global.load_lobby(lobby, true)
 
 func _loading_screen(button:String) -> void:
 	match button:
