@@ -10,14 +10,15 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"server-go/common"
+	"server-go/database"
 	"server-go/routes"
 )
 
 func main() {
 
 	common.InitCache()
-	// uncomment if you have a database set up
-	// database.InitDB()
+
+	database.InitDB()
 
 	mux := chi.NewRouter()
 

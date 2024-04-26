@@ -3,15 +3,19 @@ package modules
 import (
 	"server-go/common"
 	"server-go/modules/discord_utils"
+	"time"
 
 	"github.com/diamondburned/arikawa/v3/discord"
 )
 
 type Lobby struct {
-	ID        int
-	Clients   map[common.Snowflake]*Client
-	OwnerID   discord.UserID
-	IsStarted bool
+	ID           int
+	Clients      map[common.Snowflake]*Client
+	OwnerID      discord.UserID
+	IsStarted    bool
+	MaxLobbySize int
+
+	startCountdown *time.Timer
 }
 
 func (l *Lobby) AddPlayer(client *Client) {

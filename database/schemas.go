@@ -6,21 +6,26 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type UserBadge struct { //leaved as example
-	bun.BaseModel `bun:"table:userbadges"`
+type Category struct {
+	bun.BaseModel `bun:"table:categories" json:"-"`
 
-	ID               int32  `bun:"id,pk,autoincrement" json:"-"`
-	DiscordID        string `bun:"discordid,type:numeric" json:"-"`
-	BadgeName        string `bun:"badge_name" json:"badge_name"`
-	BadgeIcon        string `bun:"badge_icon" json:"badge_icon"`
-	RedirectURL      string `bun:"redirect_url" json:"redirect_url"`
-	BadgeType        int32  `bun:"badge_type" json:"badge_type"`
-	BadgeDescription string `bun:"badge_description" json:"badge_description"`
+	ID   int32  `bun:"id,pk,autoincrement" json:"id"`
+	Name string `bun:"name" json:"name"`
+}
+
+type Question struct {
+	bun.BaseModel `bun:"table:questions" json:"-"`
+
+	ID              int32    `bun:"id,pk,autoincrement" json:"-"`
+	CategoryID      int32    `bun:"category_id" json:"-"`
+	Question        string   `bun:"question" json:"question"`
+	PossibleAnswers []string `bun:"possible_answers" json:"possible_answers"`
 }
 
 func createSchema() error {
 	models := []any{
-		//list of models
+		&Category{},
+		&Question{},
 	}
 
 	for _, model := range models {

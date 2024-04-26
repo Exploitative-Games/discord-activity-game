@@ -3,7 +3,6 @@ package modules
 import (
 	"fmt"
 	"server-go/common"
-	"server-go/errors"
 
 	"server-go/modules/discord_utils"
 
@@ -59,7 +58,7 @@ func (c *Client) ReadPump() {
 		res, err := ProcessPacket(c, packet)
 
 		if err != nil {
-			res.Error = errors.ErrInternalServer.Error()
+			res.Error = err.Error()
 			// lets not send faulty data if we have an error
 			res.Data = nil
 			println(err.Error()) // for debugging purposes, should switch to slog later
@@ -92,6 +91,6 @@ func (c *Client) Disconnect() {
 	err := c.conn.Close()
 	c.manager.RemoveClient(c)
 	if err != nil {
-		fmt.Println("err while disconnecting" , err)
+		fmt.Println("err while disconnecting", err)
 	}
 }

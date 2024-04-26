@@ -1,8 +1,10 @@
 package modules
 
 import (
+	"fmt"
 	"math/rand/v2"
 	"server-go/common"
+	questionmanager "server-go/modules/question_manager"
 	"sync"
 )
 
@@ -39,7 +41,7 @@ func (gm *GameManager) RemoveClient(client *Client) {
 }
 
 func (gm *GameManager) CreateLobby() (int, *Lobby) {
-	lobby := Lobby{Clients: make(map[common.Snowflake]*Client)}
+	lobby := Lobby{Clients: make(map[common.Snowflake]*Client), MaxLobbySize: 2}
 
 	// synchorize this operation so stupid stuff dont happen
 	gm.Lock()
@@ -48,7 +50,7 @@ func (gm *GameManager) CreateLobby() (int, *Lobby) {
 	lobbyID := rand.Int()
 
 	lobby.ID = lobbyID
-	
+
 	// make sure we dont have a lobby with the same id
 	for gm.Lobbies[lobbyID] != nil {
 		lobbyID = rand.Int()
@@ -84,4 +86,27 @@ func (gm *GameManager) RemoveClientFromLobby(lobbyID int, client *Client) {
 	if len(lobby.Clients) == 0 {
 		gm.deleteLobby(lobbyID)
 	}
+}
+
+func (gm *GameManager) StartGame(lobbyID int) {
+	gm.Lock()
+	defer gm.Unlock()
+
+	lobby := gm.Lobbies[lobbyID]
+
+	if lobby == nil {
+		return
+	}
+
+	categories, err := questionmanager.GetRandomCategories(3)
+
+	if err != nil {
+		fmt.Println("An error occured while getting random categories ", err)
+		return
+	}
+
+
+	gm.BroadcastToLobby(lobbyID, "game_start", OutgoingStartGamePacket{
+		Categories: categories,
+	})
 }

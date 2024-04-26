@@ -2,10 +2,14 @@ package modules
 
 import (
 	"errors"
+	"server-go/database"
 	"server-go/modules/discord_utils"
+	"time"
 
 	"github.com/diamondburned/arikawa/v3/discord"
 )
+
+type EmptyPacket struct{}
 
 type IncomingAuthPacket struct {
 	Code        string `json:"code"`
@@ -47,6 +51,10 @@ type OutgoingJoinLobbyPacket struct {
 	LobbyOwnerID discord.UserID        `json:"lobby_owner_id"`
 }
 
+type OutgoingGameStartCountdownPacket struct {
+	Countdown int `json:"countdown"`
+}
+
 func (event *IncomingJoinLobbyPacket) Process(client *Client) (interface{}, error) {
 	if client.lobby != nil {
 		return OutgoingJoinLobbyPacket{}, errors.New("client already in a lobby")
@@ -54,13 +62,26 @@ func (event *IncomingJoinLobbyPacket) Process(client *Client) (interface{}, erro
 
 	lobby := client.manager.Lobbies[event.LobbyID]
 	if lobby == nil {
-		return OutgoingJoinLobbyPacket{}, errors.New("lobby not found")
+		return OutgoingJoinLobbyPacket{}, errors.New("lobby_not_found")
+	}
+
+	if len(lobby.Clients) >= lobby.MaxLobbySize {
+		return OutgoingJoinLobbyPacket{}, errors.New("lobby_full")
 	}
 
 	lobby.AddPlayer(client)
 
 	client.manager.BroadcastToLobby(client.lobby.ID, "player_joined", OutgoingLobbyPlayerLeftPacket{
 		Player: client.DiscordUser,
+	})
+
+	client.manager.BroadcastToLobby(client.lobby.ID, "game_start_countdown_start", OutgoingGameStartCountdownPacket{
+		Countdown: 3,
+	})
+
+	lobby.startCountdown = time.AfterFunc(3*time.Second, func() {
+		client.lobby.IsStarted = true
+		client.manager.BroadcastToLobby(client.lobby.ID, "game_start", nil)
 	})
 
 	return OutgoingJoinLobbyPacket{Players: lobby.GetPlayers(), LobbyOwnerID: lobby.OwnerID}, nil
@@ -72,14 +93,25 @@ type OutgoingLeaveLobbyPacket struct{}
 
 func (event *IncomingLeaveLobbyPacket) Process(client *Client) (interface{}, error) {
 	if client.lobby == nil {
-		return OutgoingLeaveLobbyPacket{}, errors.New("client not in a lobby")
+		return OutgoingLeaveLobbyPacket{}, errors.New("client_not_in_lobby")
 	}
 
-	client.lobby.RemovePlayer(client)
+	lobby := client.lobby
 
-	client.manager.BroadcastToLobby(client.lobby.ID, "player_left", OutgoingLobbyPlayerLeftPacket{
-		Player: client.DiscordUser,
-	})
+	client.manager.RemoveClientFromLobby(lobby.ID, client)
+
+	// lets be sure lobby isnt closed
+	if lobby != nil {
+		client.manager.BroadcastToLobby(lobby.ID, "player_left", OutgoingLobbyPlayerLeftPacket{
+			Player: client.DiscordUser,
+		})
+
+		if lobby.startCountdown != nil {
+			lobby.startCountdown.Stop()
+
+			client.manager.BroadcastToLobby(lobby.ID, "game_start_countdown_cancel", EmptyPacket{})
+		}
+	}
 
 	client.lobby = nil
 
@@ -124,4 +156,8 @@ func (event *IncomingGetLobbyListPacket) Process(client *Client) (interface{}, e
 	}
 
 	return OutgoingGetLobbyListPacket{Lobbies: lobbies}, nil
+}
+
+type OutgoingStartGamePacket struct {
+	Categories []database.Category `json:"categories"`
 }
