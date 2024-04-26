@@ -14,6 +14,7 @@ extends Node
 
 signal initialized
 signal avatar_loaded
+signal lobby_loaded
 
 var main_menu:CanvasLayer
 
@@ -88,6 +89,7 @@ func load_lobby(lobby:Lobby, new:bool = false) -> void:
 		get_tree().root.add_child(l)
 		self.lobby = lobby
 	load_cancel_flag = false
+	lobby_loaded.emit()
 	return
 
 func _loading_screen(id:int) -> void:

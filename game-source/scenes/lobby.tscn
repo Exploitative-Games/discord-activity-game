@@ -6,6 +6,14 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ys06s"]
 
+[sub_resource type="Gradient" id="Gradient_fv3nr"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_35p3m"]
+gradient = SubResource("Gradient_fv3nr")
+fill_to = Vector2(0, 0)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8k3a7"]
 bg_color = Color(0.933068, 0.969457, 0.969366, 1)
 border_width_left = 3
@@ -18,16 +26,105 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="Gradient" id="Gradient_fv3nr"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_35p3m"]
-gradient = SubResource("Gradient_fv3nr")
-fill_to = Vector2(0, 0)
-
 [node name="Lobby" type="CanvasLayer"]
 script = ExtResource("1_j2088")
+
+[node name="Players" type="Panel" parent="."]
+auto_translate_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -254.0
+offset_top = 13.0
+offset_right = 254.0
+offset_bottom = 109.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_8hsvc")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Players"]
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.386288
+anchor_top = -0.0416667
+anchor_right = 1.38629
+anchor_bottom = 1.05208
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Player 1" type="HBoxContainer" parent="Players/HBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Players/HBoxContainer/Player 1"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 20.0
+
+[node name="name" type="Label" parent="Players/HBoxContainer/Player 1/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ys06s")
+horizontal_alignment = 2
+clip_text = true
+
+[node name="handle" type="Label" parent="Players/HBoxContainer/Player 1/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "
+"
+horizontal_alignment = 2
+clip_text = true
+
+[node name="Avatar" type="TextureRect" parent="Players/HBoxContainer/Player 1"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 10
+texture = SubResource("GradientTexture2D_35p3m")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="Player 2" type="HBoxContainer" parent="Players/HBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Avatar" type="TextureRect" parent="Players/HBoxContainer/Player 2"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 2
+texture = SubResource("GradientTexture2D_35p3m")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Players/HBoxContainer/Player 2"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 20.0
+
+[node name="name" type="Label" parent="Players/HBoxContainer/Player 2/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ys06s")
+clip_text = true
+
+[node name="handle" type="Label" parent="Players/HBoxContainer/Player 2/VBoxContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+clip_text = true
 
 [node name="Messages" type="Panel" parent="."]
 auto_translate_mode = 1
@@ -114,91 +211,8 @@ size_flags_vertical = 3
 focus_mode = 0
 text = "Send"
 
-[node name="Players" type="Panel" parent="Messages"]
-auto_translate_mode = 1
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -212.0
-offset_top = -353.0
-offset_right = 212.0
-offset_bottom = -257.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-theme = ExtResource("2_8hsvc")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Messages/Players"]
-auto_translate_mode = 1
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 25.0
-offset_top = 25.0
-offset_right = -25.0
-offset_bottom = -25.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Player 1" type="HBoxContainer" parent="Messages/Players/HBoxContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-
-[node name="HBoxContainer" type="VBoxContainer" parent="Messages/Players/HBoxContainer/Player 1"]
-auto_translate_mode = 1
-layout_mode = 2
-
-[node name="name" type="Label" parent="Messages/Players/HBoxContainer/Player 1/HBoxContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-theme_override_styles/normal = SubResource("StyleBoxEmpty_ys06s")
-text = "Lorem ipsum"
-horizontal_alignment = 2
-
-[node name="handle" type="Label" parent="Messages/Players/HBoxContainer/Player 1/HBoxContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "@Lorem ipsum"
-horizontal_alignment = 2
-
-[node name="Avatar" type="TextureRect" parent="Messages/Players/HBoxContainer/Player 1"]
-auto_translate_mode = 1
-layout_mode = 2
-texture = SubResource("GradientTexture2D_35p3m")
-
-[node name="Player 2" type="HBoxContainer" parent="Messages/Players/HBoxContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-
-[node name="Avatar" type="TextureRect" parent="Messages/Players/HBoxContainer/Player 2"]
-auto_translate_mode = 1
-layout_mode = 2
-texture = SubResource("GradientTexture2D_35p3m")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Messages/Players/HBoxContainer/Player 2"]
-auto_translate_mode = 1
-layout_mode = 2
-
-[node name="name" type="Label" parent="Messages/Players/HBoxContainer/Player 2/VBoxContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-theme_override_styles/normal = SubResource("StyleBoxEmpty_ys06s")
-text = "Lorem ipsum"
-
-[node name="handle" type="Label" parent="Messages/Players/HBoxContainer/Player 2/VBoxContainer"]
-auto_translate_mode = 1
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "@Lorem ipsum"
-
 [node name="Category Select" type="Panel" parent="."]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

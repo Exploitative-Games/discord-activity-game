@@ -137,15 +137,16 @@ func _lobby_select(button:String) -> void:
 				var i = items[0]
 				Global.load_lobby(lobbies[selected_lobby])
 		"New Room":
-			switch_menu("Create Room")
-			var line:LineEdit = $"Create Room/VBoxContainer/LineEdit"
-			line.clear()
-			line.grab_focus()
+			#switch_menu("Create Room")
+			#var line:LineEdit = $"Create Room/VBoxContainer/LineEdit"
+			#line.clear()
+			#line.grab_focus()
+			var lobby := await Global.create_lobby()
+			Global.load_lobby(lobby, true)
 		"Refresh":
 			await _fetch_lobbies()
 		"Debug":
-			var lobby := await Global.create_lobby()
-			Global.load_lobby(lobby, true)
+			pass
 
 func _loading_screen(button:String) -> void:
 	match button:
@@ -159,10 +160,11 @@ func _credits(button:String) -> void:
 			switch_menu("Main Menu")
 
 func _create_room(button:String) -> void:
-	match button:
-		"Back":
-			switch_menu("Lobby Select")
-		"Create":
-			var line:LineEdit = $"Create Room/VBoxContainer/LineEdit"
-			var lobby:Global.Lobby = await Global.create_lobby(line.text)
-			Global.load_lobby(lobby)
+	#match button:
+		#"Back":
+			#switch_menu("Lobby Select")
+		#"Create":
+			#var line:LineEdit = $"Create Room/VBoxContainer/LineEdit"
+			#var lobby:Global.Lobby = await Global.create_lobby(line.text)
+			#Global.load_lobby(lobby)
+	pass
