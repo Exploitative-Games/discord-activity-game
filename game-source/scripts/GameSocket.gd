@@ -51,7 +51,7 @@ func start() -> void:
 	
 	set_process(true)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	sock.poll()
 	match sock.get_ready_state():
 		WebSocketPeer.STATE_OPEN:
@@ -74,8 +74,8 @@ func _send_request(req:Dictionary) -> void:
 	if err != OK: printerr("error sending request, code: ", err)
 
 func _get_response() -> Dictionary:
-	var str := sock.get_packet().get_string_from_ascii()
-	var parsed := JSON.parse_string(str) as Dictionary
+	var string := sock.get_packet().get_string_from_ascii()
+	var parsed := JSON.parse_string(string) as Dictionary
 	return parsed
 
 func dict_to_user(data:Dictionary) -> Global.User:

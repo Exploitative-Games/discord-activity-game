@@ -46,7 +46,7 @@ func _ready() -> void:
 	
 	line.grab_focus()
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if timer != null:
 		counter.text = "%.1f" % timer.time_left
 

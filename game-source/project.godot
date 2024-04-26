@@ -24,6 +24,11 @@ Global="*res://scripts/Global.gd"
 GameSocket="*res://scripts/GameSocket.gd"
 Background="*res://scenes/background.tscn"
 
+[debug]
+
+gdscript/warnings/unused_signal=0
+gdscript/warnings/shadowed_variable=0
+
 [display]
 
 mouse_cursor/tooltip_position_offset=Vector2(5, 5)

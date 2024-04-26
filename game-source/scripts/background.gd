@@ -18,7 +18,7 @@ func _ready() -> void:
 		speeds.append(randf_range(0.3, 1.0))
 		rots.append(randf_range(0.01, 0.04))
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	for i in SHAPE_COUNT:
 		var t = multimesh.get_instance_transform_2d(i)
 		if t.get_origin().y < -50:

@@ -69,25 +69,18 @@ func _ready():
 func create_lobby(_room_name:String = "") -> Lobby:
 	#var lobby:Lobby = Lobby.new(room_name, [user], 0)
 	var res := await GameSocket.create_lobby()
-	var room_name := "(%d/2) "
 	var players:Array[User] = []
-	if res["players"].size() >= 1:
-		players.append(GameSocket.dict_to_user(res["players"][0]))
-		room_name += players[0].name
-	if res["players"].size() >= 2:
-		players.append(GameSocket.dict_to_user(res["players"][1]))
-		room_name += players[1].name
 	var lobby := Lobby.new("", players, res["lobby_id"])
 	return lobby
 
-func load_lobby(lobby:Lobby, new:bool = false) -> void:
+func load_lobby(lob:Lobby, new:bool = false) -> void:
 	print(lobby)
-	if not new: await _loading_screen(lobby.id)
+	if not new: await _loading_screen(lob.id)
 	if not load_cancel_flag: 
 		main_menu.hide()
 		var l = LOBBY.instantiate()
 		get_tree().root.add_child(l)
-		self.lobby = lobby
+		lobby = lob
 	load_cancel_flag = false
 	lobby_loaded.emit()
 	return

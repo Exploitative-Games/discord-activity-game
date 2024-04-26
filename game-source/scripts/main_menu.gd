@@ -131,10 +131,7 @@ func _lobby_select(button:String) -> void:
 			switch_menu("Main Menu")
 		"Join":
 			var items = list.get_selected_items()
-			if items.is_empty():
-				return
-			else:
-				var i = items[0]
+			if not items.is_empty():
 				Global.load_lobby(lobbies[selected_lobby])
 		"New Room":
 			#switch_menu("Create Room")
@@ -159,7 +156,7 @@ func _credits(button:String) -> void:
 		"Back":
 			switch_menu("Main Menu")
 
-func _create_room(button:String) -> void:
+func _create_room(_button:String) -> void:
 	#match button:
 		#"Back":
 			#switch_menu("Lobby Select")

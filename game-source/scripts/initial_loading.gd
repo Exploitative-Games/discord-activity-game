@@ -7,7 +7,7 @@ const MAIN_MENU = preload("res://scenes/main_menu.tscn")
 func _ready() -> void:
 	Global.initialized.connect(Callable(self, "_on_initialized"))
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	spinner.rotation -= 0.1
 
 func _on_initialized():
