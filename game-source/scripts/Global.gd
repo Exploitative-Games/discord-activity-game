@@ -13,7 +13,6 @@
 extends Node
 
 signal initialized
-signal lobby_loaded
 signal avatar_loaded
 
 var main_menu:CanvasLayer
@@ -71,18 +70,18 @@ func create_lobby(_room_name:String) -> Lobby:
 	var res := await GameSocket.create_lobby()
 	var room_name := "(%d/2) "
 	var players:Array[User] = []
-	if res["players"].size >= 1:
+	if res["players"].size() >= 1:
 		players.append(GameSocket.dict_to_user(res["players"][0]))
 		room_name += players[0].name
-	if res["players"].size >= 2:
+	if res["players"].size() >= 2:
 		players.append(GameSocket.dict_to_user(res["players"][1]))
 		room_name += players[1].name
 	var lobby := Lobby.new("", players, res["lobby_id"])
 	return lobby
 
-func load_lobby(lobby:Lobby) -> void: #todo
+func load_lobby(lobby:Lobby) -> void:
 	print(lobby)
-	await _loading_screen()
+	await _loading_screen(lobby.id)
 	if not load_cancel_flag: 
 		main_menu.hide()
 		var l = LOBBY.instantiate()
@@ -91,21 +90,16 @@ func load_lobby(lobby:Lobby) -> void: #todo
 	load_cancel_flag = false
 	return
 
-func _loading_screen() -> void:
+func _loading_screen(id:int) -> void:
 	var loading_screen = main_menu.loading_screen
 	loading_screen.scale = Vector2.ZERO
 	loading_screen.show()
 	#var tw := create_tween()
 	create_tween().tween_property(loading_screen, "scale", Vector2.ONE, 0.2).set_trans(Tween.TRANS_QUINT)
-	_join_lobby()
-	await lobby_loaded
+	await GameSocket.join_lobby(id)
 	if load_cancel_flag:
 		await create_tween().tween_property(loading_screen, "scale", Vector2.ZERO, 0.2).set_trans(Tween.TRANS_QUINT).finished
 	loading_screen.hide()
-
-func _join_lobby() -> void:
-	await get_tree().create_timer(2.0).timeout
-	lobby_loaded.emit()
 
 func get_avatar(user:User) -> Texture2D:
 	var url := "https://cdn.discordapp.com/avatars/%d/%s.png?size=256" % [user.id, user.avatar]
