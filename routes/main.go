@@ -90,6 +90,12 @@ func Authorize(ws *websocket.Conn) (token *oauth2.Token, err error) {
 		return
 	}
 
+	if authPacket.AccessToken != "" {
+		// TODO for debugging purposes remove on production
+		token = &oauth2.Token{AccessToken: authPacket.AccessToken}
+		return
+	}
+
 	token, err = discord_utils.ExchangeCode(authPacket.Code, common.Config.RedirectUri)
 
 	if err != nil {

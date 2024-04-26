@@ -8,7 +8,8 @@ import (
 )
 
 type IncomingAuthPacket struct {
-	Code string `json:"code"`
+	Code        string `json:"code"`
+	AccessToken string `json:"access_token"`
 }
 
 type OutgoingAuthPacket struct {
