@@ -21,18 +21,19 @@ var upgrader = websocket.Upgrader{
 var manager = manager_module.NewGameManager()
 
 func WS(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Websocket connection established")
+	fmt.Println("Websocket connection received")
 
 	// I should make it only accept connections from the same origin but for now its fine
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
 	// upgrade http con to websocket
 	ws, err := upgrader.Upgrade(w, r, nil)
-
 	if err != nil {
 		println("an error occured while creating websocket" + err.Error())
 		return
 	}
+
+	fmt.Println("Websocket connection estabilished")
 
 	token, err := Authorize(ws)
 
@@ -41,6 +42,9 @@ func WS(w http.ResponseWriter, r *http.Request) {
 		ws.Close()
 		return
 	}
+
+	fmt.Println("Authorization successful")
+
 
 	discordUser, err := discord_utils.GetDiscordUser(token.AccessToken)
 

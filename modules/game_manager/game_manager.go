@@ -31,6 +31,10 @@ func (gm *GameManager) RemoveClient(client *Client) {
 	gm.Lock()
 	defer gm.Unlock()
 
+	if client.lobby != nil {
+		gm.RemoveClientFromLobby(client.lobby.ID, client)
+	}
+
 	delete(gm.Clients, common.Snowflake(client.DiscordUser.ID))
 }
 
