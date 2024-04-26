@@ -75,16 +75,26 @@ func dict_to_user(data:Dictionary) -> Global.User:
 	)
 	return user
 
+
 func _authenticate():
-	DiscordSDK.init(Global.CLIENT_ID)
-	await DiscordSDK.dispatch_ready
-	var auth = await DiscordSDK.command_authorize("code", ["identify", "guilds"], "")
 	var req := {
 		"op": "auth",
-		"d": {
+	}
+	
+	var access_token = OS.get_environment("DCGAME_ACCESS_TOKEN")
+	if OS.is_debug_build() and access_token != "":
+		req["d"] = {
+			"access_token": access_token
+		}
+	else:
+		DiscordSDK.init(Global.CLIENT_ID)
+		await DiscordSDK.dispatch_ready
+		var auth = await DiscordSDK.command_authorize("code", ["identify", "guilds"], "")
+		
+		req["d"] = {
 			"code": auth["code"]
 		}
-	}
+		
 	sock.poll()
 	_send_request(req)
 
