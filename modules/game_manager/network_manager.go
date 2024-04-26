@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"fmt"
 	"server-go/common"
 	"server-go/errors"
 
@@ -35,11 +36,7 @@ func (c *Client) SendPacket(packet common.Packet) {
 }
 
 func (c *Client) ReadPump() {
-	defer func() {
-		c.manager.RemoveClient(c)
-		c.send <- common.Packet{Op: "disconnect", Data: nil}
-		c.conn.Close()
-	}()
+	defer c.Disconnect()
 
 	for {
 		_, message, err := c.conn.ReadMessage()
@@ -76,13 +73,25 @@ func (c *Client) WritePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
-			if !ok || message.Op == "disconnect" {
+			if !ok {
 				print("non ok status, websocket closed")
-				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
 
-			c.conn.WriteJSON(message)
+			err := c.conn.WriteJSON(message)
+			if err != nil {
+				return
+			}
 		}
+	}
+}
+
+func (c *Client) Disconnect() {
+	println("Disconnecting client ", c.DiscordUser.ID)
+	close(c.send)
+	err := c.conn.Close()
+	c.manager.RemoveClient(c)
+	if err != nil {
+		fmt.Println("err while disconnecting" , err)
 	}
 }

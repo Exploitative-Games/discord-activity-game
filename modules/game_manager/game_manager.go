@@ -28,12 +28,12 @@ func (gm *GameManager) AddClient(client *Client) {
 }
 
 func (gm *GameManager) RemoveClient(client *Client) {
-	gm.Lock()
-	defer gm.Unlock()
-
 	if client.lobby != nil {
 		gm.RemoveClientFromLobby(client.lobby.ID, client)
 	}
+
+	gm.Lock()
+	defer gm.Unlock()
 
 	delete(gm.Clients, common.Snowflake(client.DiscordUser.ID))
 }
@@ -59,10 +59,7 @@ func (gm *GameManager) CreateLobby() (int, *Lobby) {
 	return lobbyID, &lobby
 }
 
-func (gm *GameManager) DeleteLobby(id int) {
-	gm.Lock()
-	defer gm.Unlock()
-
+func (gm *GameManager) deleteLobby(id int) {
 	delete(gm.Lobbies, id)
 }
 
@@ -85,6 +82,6 @@ func (gm *GameManager) RemoveClientFromLobby(lobbyID int, client *Client) {
 	delete(lobby.Clients, common.Snowflake(client.DiscordUser.ID))
 
 	if len(lobby.Clients) == 0 {
-		gm.DeleteLobby(lobbyID)
+		gm.deleteLobby(lobbyID)
 	}
 }

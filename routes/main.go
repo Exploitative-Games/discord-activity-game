@@ -53,6 +53,14 @@ func WS(w http.ResponseWriter, r *http.Request) {
 		ws.Close()
 		return
 	}
+
+	if manager.Clients[common.Snowflake(discordUser.ID)] != nil {
+		// this code probably wont get called but better to check just in case
+		println("client already connected, disconnecting old client")
+		oldClient := manager.Clients[common.Snowflake(discordUser.ID)]
+		oldClient.Disconnect()
+	}
+
 	// finally after all checks
 
 	client := manager_module.NewClient(manager, ws, token, discordUser)
