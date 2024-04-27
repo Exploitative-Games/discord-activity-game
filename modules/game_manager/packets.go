@@ -80,8 +80,7 @@ func (event *IncomingJoinLobbyPacket) Process(client *Client) (interface{}, erro
 	})
 
 	lobby.startCountdown = time.AfterFunc(3*time.Second, func() {
-		client.lobby.IsStarted = true
-		client.manager.BroadcastToLobby(client.lobby.ID, "game_start", nil)
+		client.manager.StartGame(lobby.ID)
 	})
 
 	return OutgoingJoinLobbyPacket{Players: lobby.GetPlayers(), LobbyOwnerID: lobby.OwnerID}, nil
