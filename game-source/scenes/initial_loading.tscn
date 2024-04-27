@@ -7,7 +7,7 @@
 [node name="Initial Loading" type="CanvasLayer"]
 script = ExtResource("1_nau5b")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Connecting" type="Panel" parent="."]
 auto_translate_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -23,7 +23,7 @@ grow_vertical = 2
 size_flags_horizontal = 4
 theme = ExtResource("2_deh3x")
 
-[node name="Label" type="Label" parent="Panel"]
+[node name="Label" type="Label" parent="Connecting"]
 auto_translate_mode = 1
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 1
@@ -39,7 +39,7 @@ grow_vertical = 2
 text = "Initializing game..."
 autowrap_mode = 3
 
-[node name="Spinner" type="TextureRect" parent="Panel"]
+[node name="Spinner" type="TextureRect" parent="Connecting"]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 1
 anchors_preset = 7
@@ -57,3 +57,54 @@ pivot_offset = Vector2(16, 16)
 texture = ExtResource("3_714lf")
 expand_mode = 1
 stretch_mode = 4
+
+[node name="No Connecton" type="Panel" parent="."]
+auto_translate_mode = 1
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -151.0
+offset_top = -52.0
+offset_right = 151.0
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_deh3x")
+
+[node name="Label" type="Label" parent="No Connecton"]
+auto_translate_mode = 1
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 20.0
+offset_right = -25.0
+offset_bottom = -45.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Couldn't connect to server"
+autowrap_mode = 3
+
+[node name="Retry" type="Button" parent="No Connecton"]
+auto_translate_mode = 1
+custom_minimum_size = Vector2(37.35, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 21.0
+offset_top = 57.0
+offset_right = -21.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 3
+text = "Retry"
+expand_icon = true

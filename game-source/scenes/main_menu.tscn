@@ -163,10 +163,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -106.0
-offset_top = -119.5
-offset_right = 106.0
-offset_bottom = 119.5
+offset_left = -122.0
+offset_top = -88.0
+offset_right = 122.0
+offset_bottom = 89.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
@@ -188,8 +188,9 @@ grow_vertical = 2
 [node name="Label" type="Label" parent="Credits/VBoxContainer"]
 auto_translate_mode = 1
 layout_mode = 2
-text = "sgdfsgfsdhdfhsfhgıodsfıohwoegheowghıoewgoewewtwtwetegtewggwegwe"
-autowrap_mode = 3
+text = "Client: peachey2k2
+Server: mantikafasi
+Thanks for playing!"
 
 [node name="Back" type="Button" parent="Credits/VBoxContainer"]
 auto_translate_mode = 1
