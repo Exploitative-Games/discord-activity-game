@@ -6,8 +6,6 @@ import (
 )
 
 func (gm *GameManager) BroadcastToLobby(lobbyID int, op string, data interface{}) {
-	gm.Lock()
-	defer gm.Unlock()
 
 	lobby := gm.Lobbies[lobbyID]
 
