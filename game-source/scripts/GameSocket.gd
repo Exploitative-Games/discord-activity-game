@@ -4,15 +4,20 @@ signal create_lobby_received(res:Dictionary)
 signal join_lobby_received(res:Dictionary)
 signal leave_lobby_received(res:Dictionary)
 signal get_lobby_list_received(res:Dictionary)
-signal ping_received
 
 signal player_joined_received(res:Dictionary)
+signal player_left_received(res:Dictionary)
 signal game_start_received(res:Dictionary)
 signal game_start_countdown_start_received(res:Dictionary)
 
-@onready var sock:WebSocketPeer
+signal ping_received
 
+signal connection_failed
+signal reconnect
+
+@onready var sock:WebSocketPeer
 const PING_INTERVAL:float = 5.0
+const CONNECTION_TIMEOUT_INTERVAL:float = 10.0
 
 var TOKEN:String # scary
 var ping_timer:Timer
@@ -36,6 +41,7 @@ func start() -> void:
 	
 	_authenticate()
 	
+	var timer := get_tree().create_timer(CONNECTION_TIMEOUT_INTERVAL)
 	while true:
 		sock.poll()
 		if sock.get_available_packet_count():
@@ -46,6 +52,13 @@ func start() -> void:
 			Global.user = dict_to_user(d["user"])
 			break
 		await get_tree().physics_frame
+		if timer.time_left == 0:
+			printerr("connection timed out")
+			sock.close(-1, "connection timed out")
+			connection_failed.emit()
+			await reconnect
+			start()
+			return
 	
 	await get_tree().physics_frame
 	Global.initialized.emit()
@@ -65,7 +78,7 @@ func _process(_delta: float) -> void:
 		WebSocketPeer.STATE_OPEN:
 			while sock.get_available_packet_count():
 				var res = _get_response()
-				emit_signal(res["op"] + "_received", res["d"])
+				assert(not emit_signal(res["op"] + "_received", res["d"]), "[ERROR] Signal for \"%s\" doesn't exist." % res["op"])
 				if res["op"] != "ping": print("packet received: ", res)
 		WebSocketPeer.STATE_CONNECTING:
 			pass

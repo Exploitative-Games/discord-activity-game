@@ -22,6 +22,7 @@ func _connect_signals():
 	$Messages/VBoxContainer/Send.pressed.connect(Callable(self, "_on_message_sent"))
 	line.text_submitted.connect(Callable(self, "_on_message_sent").unbind(1))
 	GameSocket.player_joined_received.connect(Callable(self, "_on_player_joined"))
+	GameSocket.game_start_received.connect(Callable(self, "_on_game_start"))
 
 func _update_players():
 	print(Global.lobby.players)
@@ -48,7 +49,8 @@ func _ready() -> void:
 	await Global.lobby_loaded
 	_connect_signals()
 	_update_players()
-	
+
+func _on_game_start():
 	category_select.scale = Vector2.ZERO
 	category_select.show()
 	create_tween().tween_property(category_select, "scale", Vector2.ONE, 0.2).set_trans(Tween.TRANS_QUINT)
