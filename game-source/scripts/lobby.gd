@@ -21,17 +21,28 @@ func _connect_signals():
 		category_select.get_child(1).get_child(i).pressed.connect(Callable(self, "_on_category_selected").bind(i))
 	$Messages/VBoxContainer/Send.pressed.connect(Callable(self, "_on_message_sent"))
 	line.text_submitted.connect(Callable(self, "_on_message_sent").unbind(1))
+	GameSocket.player_joined_received.connect(Callable(self, "_on_player_joined"))
 
 func _update_players():
+	print(Global.lobby.players)
+	#for player in Global.lobby.players:
+		#if player.id == Global.user.id:
+			#player_2.get_node("VBoxContainer/name").text = player.name
+			#player_2.get_node("VBoxContainer/handle").text = "@" + player.handle
+			#player_2.get_node("Avatar").texture = await Global.get_avatar(player)
+		#else:
+			#player_1.get_node("VBoxContainer/name").text = player.name
+			#player_1.get_node("VBoxContainer/handle").text = "@" + player.handle
+			#player_1.get_node("Avatar").texture = await Global.get_avatar(player)
+		
 	for player in Global.lobby.players:
-		if player.id == Global.user.id:
-			player_2.get_node("VBoxContainer/name").text = player.name
-			player_2.get_node("VBoxContainer/handle").text = "@" + player.handle
-			player_2.get_node("Avatar").texture = await Global.get_avatar(player)
-		else:
+		if player.id != Global.user.id:
 			player_1.get_node("VBoxContainer/name").text = player.name
 			player_1.get_node("VBoxContainer/handle").text = "@" + player.handle
 			player_1.get_node("Avatar").texture = await Global.get_avatar(player)
+	player_2.get_node("VBoxContainer/name").text = Global.user.name
+	player_2.get_node("VBoxContainer/handle").text = "@" + Global.user.handle
+	player_2.get_node("Avatar").texture = await Global.get_avatar(Global.user)
 
 func _ready() -> void:
 	await Global.lobby_loaded
@@ -49,6 +60,13 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	if timer != null:
 		counter.text = "%.1f" % timer.time_left
+
+func _on_player_joined(res:Dictionary):
+	var new_player := GameSocket.dict_to_user(res["player"])
+	Global.lobby.players.append(new_player)
+	player_1.get_node("VBoxContainer/name").text = new_player.name
+	player_1.get_node("VBoxContainer/handle").text = "@" + new_player.handle
+	player_1.get_node("Avatar").texture = await Global.get_avatar(new_player)
 
 func _selection_timer() -> void:
 	counter = $"Category Select/Counter"

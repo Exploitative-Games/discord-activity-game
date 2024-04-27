@@ -6,6 +6,10 @@ signal leave_lobby_received(res:Dictionary)
 signal get_lobby_list_received(res:Dictionary)
 signal ping_received
 
+signal player_joined_received(res:Dictionary)
+signal game_start_received(res:Dictionary)
+signal game_start_countdown_start_received(res:Dictionary)
+
 @onready var sock:WebSocketPeer
 
 const PING_INTERVAL:float = 5.0
@@ -13,8 +17,12 @@ const PING_INTERVAL:float = 5.0
 var TOKEN:String # scary
 var ping_timer:Timer
 
+func _connect_signals():
+	player_joined_received.connect(Callable(self, "_on_player_joined"))
+
 func _ready() -> void:
 	set_process(false)
+	_connect_signals()
 
 func start() -> void:
 	sock = WebSocketPeer.new()
@@ -58,7 +66,7 @@ func _process(_delta: float) -> void:
 			while sock.get_available_packet_count():
 				var res = _get_response()
 				emit_signal(res["op"] + "_received", res["d"])
-				print("packet received: ", res)
+				if res["op"] != "ping": print("packet received: ", res)
 		WebSocketPeer.STATE_CONNECTING:
 			pass
 		WebSocketPeer.STATE_CLOSING:
@@ -82,6 +90,7 @@ func dict_to_user(data:Dictionary) -> Global.User:
 	var user:Global.User = Global.User.new(
 		data["username"] if (data.global_name == "") else data["global_name"],
 		data["username"],
+		int(data["discriminator"]),
 		int(data["id"]),
 		data["avatar"]
 	)
@@ -119,7 +128,13 @@ func _ping() -> void:
 	await ping_received
 	print("[PING] delay: ", Time.get_ticks_msec() - t, "ms")
 
-# below are all the socket requests, remember to call them with "await"
+# Below are all the sockets that are sent without a request.
+# Signals are used for each socket to handle them easily.
+
+func _on_player_joined(res:Dictionary) -> void:
+	pass
+
+# Below are all the socket requests, remember to call them with "await".
 
 func create_lobby() -> Dictionary:
 	var req := {

@@ -33,11 +33,17 @@ class User:
 	var id:int
 	var avatar:String
 	
-	func _init(name:String, handle:String, id:int, avatar:String) -> void:
+	func _init(name:String, handle:String, discriminator:int, id:int, avatar:String) -> void:
 		self.name = name
 		self.handle = handle
 		self.id = id
-		self.avatar = avatar
+		if avatar == "":
+			if discriminator > 0:
+				self.avatar = "https://cdn.discordapp.com/embed/avatars/%d.png" % [discriminator % 5]
+			else:
+				self.avatar = "https://cdn.discordapp.com/embed/avatars/%d.png" % [(id >> 22) % 6]
+		else:
+			self.avatar = "https://cdn.discordapp.com/avatars/%d/%s.png?size=256" % [id, avatar]
 		print(self)
 	
 	func _to_string() -> String:
@@ -69,12 +75,12 @@ func _ready():
 func create_lobby(_room_name:String = "") -> Lobby:
 	#var lobby:Lobby = Lobby.new(room_name, [user], 0)
 	var res := await GameSocket.create_lobby()
-	var players:Array[User] = []
+	var players:Array[User] = [user]
 	var lobby := Lobby.new("", players, res["lobby_id"])
 	return lobby
 
 func load_lobby(lob:Lobby, new:bool = false) -> void:
-	print(lobby)
+	print(lob)
 	if not new: await _loading_screen(lob.id)
 	if not load_cancel_flag: 
 		main_menu.hide()
@@ -82,6 +88,7 @@ func load_lobby(lob:Lobby, new:bool = false) -> void:
 		get_tree().root.add_child(l)
 		lobby = lob
 	load_cancel_flag = false
+	await get_tree().physics_frame
 	lobby_loaded.emit()
 	return
 
@@ -97,7 +104,7 @@ func _loading_screen(id:int) -> void:
 	loading_screen.hide()
 
 func get_avatar(user:User) -> Texture2D:
-	var url := "https://cdn.discordapp.com/avatars/%d/%s.png?size=256" % [user.id, user.avatar]
+	var url = user.avatar
 	print("fetching the image from: ", url)
 	var hreq := HTTPRequest.new()
 	add_child(hreq)

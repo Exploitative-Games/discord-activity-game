@@ -3,6 +3,7 @@ extends CanvasLayer
 @onready var list:ItemList = $"Lobby Select/VBoxContainer/ItemList"
 @onready var join_button:Button = $"Lobby Select/VBoxContainer/HBoxContainer/Join"
 @onready var loading_screen:Panel = $"Loading Screen"
+@onready var refresh_button: Button = $"Lobby Select/VBoxContainer/HBoxContainer2/Refresh"
 
 var selected_lobby:int
 var lobbies:Array[Global.Lobby]
@@ -141,7 +142,9 @@ func _lobby_select(button:String) -> void:
 			var lobby := await Global.create_lobby()
 			Global.load_lobby(lobby, true)
 		"Refresh":
+			refresh_button.disabled = true
 			await _fetch_lobbies()
+			refresh_button.disabled = false
 		"Debug":
 			pass
 
