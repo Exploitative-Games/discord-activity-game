@@ -8,6 +8,14 @@ import (
 	"github.com/diamondburned/arikawa/v3/discord"
 )
 
+const (
+	LOBBY_STATE_WAITING = iota
+	LOBBY_STATE_CATEGORY_SELECTION
+	LOBBY_STATE_QUIZ_IN_PROGRESS
+)
+
+type LobbyState int
+
 type Lobby struct {
 	ID           int
 	Clients      map[common.Snowflake]*Client
@@ -15,7 +23,13 @@ type Lobby struct {
 	IsStarted    bool
 	MaxLobbySize int
 
-	startCountdown *time.Timer
+	state LobbyState
+
+	selectedCategories []int32
+
+	startCountdown             *time.Timer
+	categorySelectionCountdown *time.Timer
+	quizCountdown              *time.Timer
 }
 
 func (l *Lobby) AddPlayer(client *Client) {

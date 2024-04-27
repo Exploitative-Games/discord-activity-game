@@ -4,6 +4,7 @@ import (
 	"errors"
 	"server-go/database"
 	"server-go/modules/discord_utils"
+	"slices"
 	"time"
 
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -158,5 +159,40 @@ func (event *IncomingGetLobbyListPacket) Process(client *Client) (interface{}, e
 }
 
 type OutgoingStartGamePacket struct {
+	Countdown  int                 `json:"countdown"`
 	Categories []database.Category `json:"categories"`
+}
+
+type IncomingVotePacket struct {
+	CategoryID int `json:"category_id"`
+}
+
+func (event *IncomingVotePacket) Process(client *Client) (interface{}, error) {
+	if client.lobby == nil {
+		return nil, errors.New("client_not_in_lobby")
+	}
+
+	if client.lobby.IsStarted {
+		return nil, errors.New("game_not_started")
+	}
+
+	if client.votedCategory != 0 {
+		return nil, errors.New("already_voted")
+	}
+
+	if client.lobby.state != LOBBY_STATE_CATEGORY_SELECTION {
+		return nil, errors.New("invalid_state")
+	}
+
+	if !slices.Contains(client.lobby.selectedCategories, int32(event.CategoryID)) {
+		return nil, errors.New("invalid_category_id")
+	}
+
+	client.votedCategory = event.CategoryID
+
+	return nil, nil
+}
+
+type OutgoingCategorySelectionPacket struct {
+	SelectedCategory string `json:"selected_category"`
 }

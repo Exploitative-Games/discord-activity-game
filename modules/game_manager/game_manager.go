@@ -6,6 +6,7 @@ import (
 	"server-go/common"
 	questionmanager "server-go/modules/question_manager"
 	"sync"
+	"time"
 )
 
 type GameManager struct {
@@ -41,7 +42,7 @@ func (gm *GameManager) RemoveClient(client *Client) {
 }
 
 func (gm *GameManager) CreateLobby() (int, *Lobby) {
-	lobby := Lobby{Clients: make(map[common.Snowflake]*Client), MaxLobbySize: 2}
+	lobby := Lobby{Clients: make(map[common.Snowflake]*Client), MaxLobbySize: 2, state: LOBBY_STATE_WAITING}
 
 	// synchorize this operation so stupid stuff dont happen
 	gm.Lock()
@@ -105,8 +106,48 @@ func (gm *GameManager) StartGame(lobbyID int) {
 		return
 	}
 
+	lobby.selectedCategories = []int32{}
+
+	for _, category := range categories {
+		lobby.selectedCategories = append(lobby.selectedCategories, category.ID)
+	}
+
+	lobby.state = LOBBY_STATE_CATEGORY_SELECTION
+
+	lobby.categorySelectionCountdown = time.AfterFunc(5*time.Second, func() {
+		lobby.state = LOBBY_STATE_QUIZ_IN_PROGRESS
+
+		categorySelections := make(map[int]int)
+
+		for _, client := range lobby.Clients {
+			categorySelections[client.votedCategory]++
+		}
+
+		var maxCategoryID int
+
+		for categoryID, count := range categorySelections {
+			if count > categorySelections[maxCategoryID] {
+				maxCategoryID = categoryID
+			}
+		}
+
+		cat, err := questionmanager.GetCategoryWithID(maxCategoryID)
+		if err != nil {
+			// TODO properly handle this
+			fmt.Println("An error occured while getting category with id ", maxCategoryID, err)
+			return
+		}
+
+		gm.BroadcastToLobby(lobbyID, "game_category_selected", OutgoingCategorySelectionPacket{
+			SelectedCategory: cat.Name,
+		})
+
+		// TODO asking questions
+
+	})
 
 	gm.BroadcastToLobby(lobbyID, "game_start", OutgoingStartGamePacket{
+		Countdown: 5,
 		Categories: categories,
 	})
 }

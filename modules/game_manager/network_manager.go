@@ -16,6 +16,9 @@ type Client struct {
 	conn        *websocket.Conn
 	DiscordUser *discord_utils.User
 	token       *oauth2.Token
+
+	votedCategory int
+	votedAnswer int
 	// channel to send messages to the client
 	send chan common.Packet
 }
