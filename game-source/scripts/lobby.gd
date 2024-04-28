@@ -98,8 +98,13 @@ func _timer(label:Label, secs:int) -> void:
 	tflag = 0
 
 func _on_category_selected(idx:int):
-	category_select.get_child(1).get_child(selected_category).get_node("Right Arrow").hide()
-	category_select.get_child(1).get_child(idx).get_node("Right Arrow").show()
+	var container:Node = category_select.get_child(1)
+	container.get_child(selected_category).get_node("Right Arrow").hide()
+	container.get_child(idx).get_node("Right Arrow").show()
+	GameSocket.vote(categories[idx-1])
+	for child in container.get_children():
+		if child is Button:
+			child.disabled = true
 	selected_category = idx
 
 func _on_message_sent():

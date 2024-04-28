@@ -4,6 +4,7 @@ signal create_lobby_received(res:Dictionary)
 signal join_lobby_received(res:Dictionary)
 signal leave_lobby_received(res:Dictionary)
 signal get_lobby_list_received(res:Dictionary)
+signal vote_received(res:Dictionary)
 
 signal player_joined_received(res:Dictionary)
 signal player_left_received(res:Dictionary)
@@ -190,3 +191,11 @@ func get_lobby_list() -> Dictionary:
 	}
 	_send_request(req)
 	return await get_lobby_list_received
+
+func vote(id:int) -> Dictionary:
+	var req := {
+		"op": "vote",
+		"d": {}
+	}
+	_send_request(req)
+	return await vote_received
