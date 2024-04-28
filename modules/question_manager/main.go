@@ -3,6 +3,7 @@ package questionmanager
 import (
 	"context"
 	"server-go/database"
+	"strings"
 )
 
 func GetRandomCategories(n int) (categories []database.Category, err error) {
@@ -17,5 +18,6 @@ func GetCategoryWithID(id int) (category database.Category, err error) {
 
 func GetRandomQuestionWithCategoryID(categoryID int) (question database.Question, err error) {
 	err = database.DB.NewSelect().Model(&question).Where("category_id = ?", categoryID).Order("BY RANDOM()").Limit(1).Scan(context.Background(), &question)
+	question.PossibleAnswers = strings.Split(question.PossibleAnswersString, ",")
 	return
 }

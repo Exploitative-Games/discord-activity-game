@@ -1,1 +1,1 @@
-scp ./dcgame1.sqlite peachey:discord-activity-game/dcgame.sqlite
+scp ./dcgame.sqlite peachey:discord-activity-game/dcgame.sqlite

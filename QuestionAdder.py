@@ -1,7 +1,7 @@
 import questionary
 import sqlite3
 
-con = sqlite3.connect("dcgame1.sqlite")
+con = sqlite3.connect("dcgame.sqlite")
 
 categories = {}
 

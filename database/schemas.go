@@ -16,10 +16,11 @@ type Category struct {
 type Question struct {
 	bun.BaseModel `bun:"table:questions" json:"-"`
 
-	ID              int32    `bun:"id,pk,autoincrement" json:"-"`
-	CategoryID      int32    `bun:"category_id" json:"-"`
-	Question        string   `bun:"question" json:"question"`
-	PossibleAnswers []string `bun:"possible_answers" json:"possible_answers"`
+	ID                    int32    `bun:"id,pk,autoincrement" json:"-"`
+	CategoryID            int32    `bun:"category_id" json:"-"`
+	Question              string   `bun:"question" json:"question"`
+	PossibleAnswersString string   `bun:"possible_answers" json:"-"`
+	PossibleAnswers       []string `json:"possible_answers"`
 }
 
 func createSchema() error {

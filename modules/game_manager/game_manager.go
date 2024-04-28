@@ -182,7 +182,7 @@ func (gm *GameManager) StartGame(lobbyID int) {
 		lobby.question = &question		
 		
 
-		gm.BroadcastToLobby(lobbyID, "game_category_selected", OutgoingCategorySelectionPacket{
+		gm.BroadcastToLobby(lobbyID, "game_quiz_start", OutgoingCategorySelectionPacket{
 			SelectedCategory: cat.Name,
 			Question:         question.Question,
 			CurrentPlayer:    lobby.currentPlayerTurn,
