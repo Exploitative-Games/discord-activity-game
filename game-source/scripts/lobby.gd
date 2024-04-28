@@ -15,6 +15,7 @@ var players:Array[Global.User]
 var timer:SceneTreeTimer
 var counter:Label
 var selected_category:int = 1
+var categories:Array
 
 func _connect_signals():
 	for i in range(1,4):
@@ -39,12 +40,13 @@ func _update_players():
 		
 	for player in Global.lobby.players:
 		if player.id != Global.user.id:
+			Global.opponent_avatar = await Global.get_avatar(player)
 			player_1.get_node("VBoxContainer/name").text = player.name
 			player_1.get_node("VBoxContainer/handle").text = "@" + player.handle
-			player_1.get_node("Avatar").texture = await Global.get_avatar(player)
+			player_1.get_node("Avatar").texture = Global.opponent_avatar
 	player_2.get_node("VBoxContainer/name").text = Global.user.name
 	player_2.get_node("VBoxContainer/handle").text = "@" + Global.user.handle
-	player_2.get_node("Avatar").texture = await Global.get_avatar(Global.user)
+	player_2.get_node("Avatar").texture = Global.user_avatar
 
 func _ready() -> void:
 	_connect_signals()
@@ -59,7 +61,10 @@ func _on_game_start(res:Dictionary):
 	category_select.scale = Vector2.ZERO
 	category_select.show()
 	create_tween().tween_property(category_select, "scale", Vector2.ONE, 0.2).set_trans(Tween.TRANS_QUINT)
-	_timer($"Category Select/Counter", 10)
+	_timer($"Category Select/Counter", res["countdown"])
+	categories = res["categories"]
+	for i in 3:
+		$"Category Select/VBoxContainer".get_child(i+1).text = categories[i].name
 	await selection_finished
 	
 	line.grab_focus()
@@ -80,12 +85,17 @@ func _on_player_joined(res:Dictionary):
 	player_1.get_node("VBoxContainer/handle").text = "@" + new_player.handle
 	player_1.get_node("Avatar").texture = await Global.get_avatar(new_player)
 
+var tflag:int = 0
 func _timer(label:Label, secs:int) -> void:
+	tflag += 1
 	counter = label
 	timer = get_tree().create_timer(secs)
 	await timer.timeout
+	if tflag > 0:
+		return
 	counter = null
 	timer = null
+	tflag = 0
 
 func _on_category_selected(idx:int):
 	category_select.get_child(1).get_child(selected_category).get_node("Right Arrow").hide()

@@ -18,12 +18,14 @@ enum Directions {Left, Right}
 			avatar_right.hide()
 			#set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 			size_flags_horizontal = SizeFlags.SIZE_SHRINK_BEGIN
+			avatar_left.texture = Global.opponent_avatar
 		else:
 			theme = MSG_RIGHT
 			avatar_right.show()
 			avatar_left.hide()
 			#set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 			size_flags_horizontal = SizeFlags.SIZE_SHRINK_END
+			avatar_right.texture = Global.user_avatar
 		direction = val
 
 func _init() -> void:

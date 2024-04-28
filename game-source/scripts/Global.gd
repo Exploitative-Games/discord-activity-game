@@ -22,9 +22,11 @@ const CLIENT_ID = "1229029126980112476"
 
 #var label:Label
 #var button:Button
-var user:User = null
 var lobby:Lobby = null
 var load_cancel_flag:bool = false
+var opponent_avatar:Texture2D = null
+var user_avatar:Texture2D = null
+var user:User = null
 
 class User:
 	var name:String
