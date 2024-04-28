@@ -187,7 +187,7 @@ type OutgoingCategorySelectionPacket struct {
 	CurrentPlayer    discord.UserID `json:"current_player"`
 }
 
-type IncomingAnswerPacket struct {
+type IncomingAnswerQuestionPacket struct {
 	Answer string `json:"answer"`
 }
 
@@ -196,7 +196,7 @@ type OutgoingAnswerPacket struct {
 	Answer  string `json:"answer"`
 }
 
-func (event *IncomingAnswerPacket) Process(client *Client) (interface{}, error) {
+func (event *IncomingAnswerQuestionPacket) Process(client *Client) (interface{}, error) {
 	if client.lobby == nil {
 		return nil, errors.New("client_not_in_lobby")
 	}

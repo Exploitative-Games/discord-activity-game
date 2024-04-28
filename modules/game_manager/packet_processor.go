@@ -12,12 +12,13 @@ type Processor interface {
 }
 
 var typeMap = map[string]reflect.Type{
-	"auth":           reflect.TypeOf(IncomingAuthPacket{}),
-	"create_lobby":   reflect.TypeOf(IncomingCreateLobbyPacket{}),
-	"join_lobby":     reflect.TypeOf(IncomingJoinLobbyPacket{}),
-	"leave_lobby":    reflect.TypeOf(IncomingLeaveLobbyPacket{}),
-	"get_lobby_list": reflect.TypeOf(IncomingGetLobbyListPacket{}),
-	"vote_category":  reflect.TypeOf(IncomingVoteCategoryPacket{}), //mfw
+	"auth":            reflect.TypeOf(IncomingAuthPacket{}),
+	"create_lobby":    reflect.TypeOf(IncomingCreateLobbyPacket{}),
+	"join_lobby":      reflect.TypeOf(IncomingJoinLobbyPacket{}),
+	"leave_lobby":     reflect.TypeOf(IncomingLeaveLobbyPacket{}),
+	"get_lobby_list":  reflect.TypeOf(IncomingGetLobbyListPacket{}),
+	"vote_category":   reflect.TypeOf(IncomingVoteCategoryPacket{}),
+	"answer_question": reflect.TypeOf(IncomingAnswerQuestionPacket{}),
 }
 
 func ProcessPacket(client *Client, inPacket common.Packet) (outPacket common.Packet, err error) {
