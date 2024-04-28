@@ -1,17 +1,11 @@
-[gd_scene load_steps=9 format=4 uid="uid://rbc13fu3e6c8"]
+[gd_scene load_steps=8 format=4 uid="uid://rbc13fu3e6c8"]
 
 [ext_resource type="Theme" uid="uid://p6unsuxp1vug" path="res://themes/main.tres" id="1_4tj32"]
 [ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_cbrgg"]
 [ext_resource type="Theme" uid="uid://gkeyqye7jgjl" path="res://themes/negative.tres" id="3_62tl5"]
 [ext_resource type="Texture2D" uid="uid://dhew8ujihooa6" path="res://assets/refresh.png" id="3_v5alj"]
 [ext_resource type="Script" path="res://scripts/player_info.gd" id="4_i2ol8"]
-
-[sub_resource type="Gradient" id="Gradient_bnlce"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_hfubo"]
-gradient = SubResource("Gradient_bnlce")
+[ext_resource type="Texture2D" uid="uid://dblfd8nswfhkb" path="res://assets/default_avatar.tres" id="6_fbyq3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rurxu"]
 
@@ -294,7 +288,7 @@ grow_vertical = 2
 
 [node name="Avatar" type="TextureRect" parent="Player Info/HBoxContainer"]
 layout_mode = 2
-texture = SubResource("GradientTexture2D_hfubo")
+texture = ExtResource("6_fbyq3")
 expand_mode = 2
 stretch_mode = 4
 

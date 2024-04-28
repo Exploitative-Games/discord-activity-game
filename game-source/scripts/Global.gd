@@ -19,6 +19,7 @@ signal lobby_loaded
 var main_menu:CanvasLayer
 
 const CLIENT_ID = "1229029126980112476"
+const DEFAULT_AVATAR = preload("res://assets/default_avatar.tres")
 
 #var label:Label
 #var button:Button
@@ -45,7 +46,6 @@ class User:
 				self.avatar = "https://cdn.discordapp.com/embed/avatars/%d.png" % [(id >> 22) % 6]
 		else:
 			self.avatar = "https://cdn.discordapp.com/avatars/%d/%s.png?size=256" % [id, avatar]
-		print(self)
 	
 	func _to_string() -> String:
 		return "%s (@%s)" % [name, handle]
@@ -70,7 +70,6 @@ class Lobby:
 		return out
 
 func _ready():
-	print("start")
 	await GameSocket.start()
 
 func create_lobby(_room_name:String = "") -> Lobby:
@@ -81,13 +80,12 @@ func create_lobby(_room_name:String = "") -> Lobby:
 	return lobby
 
 func load_lobby(lob:Lobby, new:bool = false) -> void:
-	print(lob)
 	if not new: await _loading_screen(lob.id)
 	if not load_cancel_flag: 
 		main_menu.hide()
 		#var l = LOBBY.instantiate()
 		#get_tree().root.add_child(l)
-		GameLobby.load()
+		GameLobby.load_lobby()
 		lobby = lob
 	load_cancel_flag = false
 	await get_tree().physics_frame
@@ -107,7 +105,7 @@ func _loading_screen(id:int) -> void:
 
 func get_avatar(user:User) -> Texture2D:
 	var url = user.avatar
-	print("fetching the image from: ", url)
+	print("[FETCH] getting the image from url:", url)
 	var hreq := HTTPRequest.new()
 	add_child(hreq)
 	hreq.request(url)

@@ -4,12 +4,13 @@ signal create_lobby_received(res:Dictionary)
 signal join_lobby_received(res:Dictionary)
 signal leave_lobby_received(res:Dictionary)
 signal get_lobby_list_received(res:Dictionary)
-signal vote_received(res:Dictionary)
+signal vote_category_received(res:Dictionary)
 
 signal player_joined_received(res:Dictionary)
 signal player_left_received(res:Dictionary)
 signal game_start_received(res:Dictionary)
 signal game_start_countdown_start_received(res:Dictionary)
+signal game_start_countdown_cancel_received(res:Dictionary)
 
 signal ping_received
 
@@ -51,12 +52,12 @@ func start() -> void:
 			var d:Dictionary = res["d"]
 			TOKEN = d["access_token"]
 			res["d"]["access_token"] = "[HIDDEN]"
-			print("[PACKET] ", res)
+			print("[SOCK] packet received: ", res)
 			Global.user = dict_to_user(d["user"])
 			break
 		await get_tree().physics_frame
 		if timer.time_left == 0:
-			printerr("connection timed out")
+			printerr("[SOCK] connection timed out")
 			sock.close(-1, "connection timed out")
 			connection_failed.emit()
 			await reconnect
@@ -82,12 +83,9 @@ func _process(_delta: float) -> void:
 			while sock.get_available_packet_count():
 				var res = _get_response()
 				var sig:String = res["op"] + "_received"
-				assert(has_signal(sig), "[ERROR] Signal for \"%s\" doesn't exist." % sig)
-				#assert(not emit_signal(sig, res["d"]), "[ERROR] Signal for \"%s\" doesn't match the given arguments." % sig)
+				if not has_signal(sig): push_error("[SOCK] Signal for \"%s\" doesn't exist." % sig)
 				var err := emit_signal(sig, res["d"])
-				if err:
-					print(get_signal_connection_list(sig))
-				if res["op"] != "ping": print("[PACKET] ERR: ", err, " ", JSON.stringify(res, "\t", false))
+				if res["op"] != "ping": print("[SOCK] packet received: ", JSON.stringify(res, "\t", false))
 		WebSocketPeer.STATE_CONNECTING:
 			pass
 		WebSocketPeer.STATE_CLOSING:
@@ -95,7 +93,7 @@ func _process(_delta: float) -> void:
 		WebSocketPeer.STATE_CLOSED:
 			var code = sock.get_close_code()
 			var reason = sock.get_close_reason()
-			print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
+			print("[SOCK] socket closed.\n\tcode: %d\n\treason %s\n\tclean: %s" % [code, reason, code != -1])
 			set_process(false)
 
 func _send_request(req:Dictionary) -> void:
@@ -192,10 +190,13 @@ func get_lobby_list() -> Dictionary:
 	_send_request(req)
 	return await get_lobby_list_received
 
-func vote(id:int) -> Dictionary:
+func vote_category(id:int) -> void:
 	var req := {
-		"op": "vote",
-		"d": {}
+		"op": "vote_category",
+		"d": {
+			"category_id": id
+		}
 	}
 	_send_request(req)
-	return await vote_received
+	await vote_category_received
+	return

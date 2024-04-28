@@ -5,6 +5,7 @@ signal selection_finished
 @onready var msg_history: VBoxContainer = $Messages/VBoxContainer/Panel/ScrollContainer/VBoxContainer
 @onready var line: LineEdit = $Messages/VBoxContainer/LineEdit
 @onready var category_select: Panel = $"Category Select"
+@onready var container: VBoxContainer = $"Category Select/VBoxContainer"
 
 @onready var player_1: HBoxContainer = $"Players/HBoxContainer/Player 1"
 @onready var player_2: HBoxContainer = $"Players/HBoxContainer/Player 2"
@@ -25,9 +26,9 @@ func _connect_signals():
 	GameSocket.player_joined_received.connect(Callable(self, "_on_player_joined"))
 	GameSocket.game_start_received.connect(Callable(self, "_on_game_start"))
 	GameSocket.game_start_countdown_start_received.connect(Callable(self, "_on_game_start_countdown_start"))
+	GameSocket.game_start_countdown_cancel_received.connect(Callable(self, "_on_game_start_countdown_cancel"))
 
 func _update_players():
-	print(Global.lobby.players)
 	#for player in Global.lobby.players:
 		#if player.id == Global.user.id:
 			#player_2.get_node("VBoxContainer/name").text = player.name
@@ -51,7 +52,7 @@ func _update_players():
 func _ready() -> void:
 	_connect_signals()
 	
-func load():
+func load_lobby():
 	Global.main_menu.hide()
 	show()
 	await Global.lobby_loaded
@@ -71,7 +72,20 @@ func _on_game_start(res:Dictionary):
 
 func _on_game_start_countdown_start(res:Dictionary):
 	_timer($Messages/VBoxContainer/Panel/Counter, res["countdown"])
-	print("it werks")
+
+func _on_game_start_countdown_cancel(res:Dictionary):
+	player_1.get_node("VBoxContainer/name").text = ""
+	player_1.get_node("VBoxContainer/handle").text = ""
+	player_1.get_node("Avatar").texture = Global.DEFAULT_AVATAR
+	for child in container.get_children():
+		if child is Button:
+			child.disabled = false
+			child.get_child(0).hide()
+			child.get_child(1).hide()
+	category_select.hide()
+	timer = null
+	counter = null
+	$Messages/VBoxContainer/Panel/Counter.text = "waiting for another player"
 
 func _physics_process(_delta: float) -> void:
 	if timer != null:
@@ -98,14 +112,13 @@ func _timer(label:Label, secs:int) -> void:
 	tflag = 0
 
 func _on_category_selected(idx:int):
-	var container:Node = category_select.get_child(1)
 	container.get_child(selected_category).get_node("Right Arrow").hide()
 	container.get_child(idx).get_node("Right Arrow").show()
-	GameSocket.vote(categories[idx-1])
+	GameSocket.vote_category(categories[idx-1]["id"])
+	selected_category = idx
 	for child in container.get_children():
 		if child is Button:
 			child.disabled = true
-	selected_category = idx
 
 func _on_message_sent():
 	if line.text.length() > 0:

@@ -210,6 +210,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxEmpty_ys06s")
+text = "waiting for another player"
 horizontal_alignment = 1
 
 [node name="LineEdit" type="LineEdit" parent="Messages/VBoxContainer"]
@@ -304,6 +305,7 @@ stretch_mode = 4
 
 [node name="Right Arrow" type="TextureRect" parent="Category Select/VBoxContainer/Category 1"]
 auto_translate_mode = 1
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
