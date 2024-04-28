@@ -12,6 +12,7 @@ type ConfigStr struct {
 	RedirectUri         string    `json:"redirect_uri"`
 	ClientId            string    `json:"client_id"`
 	ClientSecret        string    `json:"client_secret"`
+	Debug               bool      `json:"debug"`
 	GithubWebhookSecret string    `json:"github_webhook_secret"`
 	Origin              string    `json:"origin"`
 	Port                string    `json:"port"`

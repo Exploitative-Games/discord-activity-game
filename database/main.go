@@ -4,10 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"server-go/common"
 
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
 	"github.com/uptrace/bun/driver/sqliteshim"
+	"github.com/uptrace/bun/extra/bundebug"
 	//"github.com/uptrace/bun/extra/bundebug"
 )
 
@@ -21,13 +23,18 @@ func InitDB() {
 		log.Panic(err)
 	}
 
+	
 	sqldb.SetMaxIdleConns(1000)
 	sqldb.SetConnMaxLifetime(0)
-
+	
 	DB = bun.NewDB(sqldb, sqlitedialect.New())
-
+	
+	if common.Config.Debug {
+		DB.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
+	}
+	
 	fmt.Println("Database Loaded")
-
+	
 	// create database structure if doesn't exist
 	if err := createSchema(); err != nil {
 		log.Println("Failed to create schema")

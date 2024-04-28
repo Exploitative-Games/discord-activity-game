@@ -20,7 +20,7 @@ type Question struct {
 	CategoryID            int32    `bun:"category_id" json:"-"`
 	Question              string   `bun:"question" json:"question"`
 	PossibleAnswersString string   `bun:"possible_answers" json:"-"`
-	PossibleAnswers       []string `json:"possible_answers"`
+	PossibleAnswers       []string `bun:"-" json:"possible_answers"`
 }
 
 func createSchema() error {
