@@ -82,10 +82,36 @@ func (gm *GameManager) RemoveClientFromLobby(lobbyID int, client *Client) {
 
 	lobby := gm.Lobbies[lobbyID]
 
+	if lobby == nil {
+		return
+	}
+
 	delete(lobby.Clients, common.Snowflake(client.DiscordUser.ID))
 
 	if len(lobby.Clients) == 0 {
 		gm.deleteLobby(lobbyID)
+		return
+	}
+
+	lobby.state = LOBBY_STATE_WAITING
+
+	// lets be sure lobby isnt closed
+	client.manager.BroadcastToLobby(lobby.ID, "player_left", OutgoingLobbyPlayerLeftPacket{
+		Player: client.DiscordUser,
+	})
+
+	if lobby.startCountdown != nil {
+		lobby.startCountdown.Stop()
+
+		client.manager.BroadcastToLobby(lobby.ID, "game_start_countdown_cancel", EmptyPacket{})
+	}
+
+	if lobby.categorySelectionCountdown != nil {
+		lobby.categorySelectionCountdown.Stop()
+	}
+
+	if lobby.quizCountdown != nil {
+		lobby.quizCountdown.Stop()
 	}
 }
 
@@ -119,7 +145,14 @@ func (gm *GameManager) StartGame(lobbyID int) {
 
 		categorySelections := make(map[int]int)
 
+		num := rand.IntN(1)
+
 		for _, client := range lobby.Clients {
+			if num == 1 {
+				lobby.currentPlayerTurn = client.DiscordUser.ID
+			}
+			num++
+
 			categorySelections[client.votedCategory]++
 		}
 
@@ -138,16 +171,26 @@ func (gm *GameManager) StartGame(lobbyID int) {
 			return
 		}
 
+		question, err := questionmanager.GetRandomQuestionWithCategoryID(int(cat.ID))
+
+		if err != nil {
+			// TODO properly handle this
+			fmt.Println("An error occured while getting random question with category id ", cat.ID, err)
+			return
+		}
+
+		lobby.question = &question		
+		
+
 		gm.BroadcastToLobby(lobbyID, "game_category_selected", OutgoingCategorySelectionPacket{
 			SelectedCategory: cat.Name,
+			Question:         question.Question,
+			CurrentPlayer:    lobby.currentPlayerTurn,
 		})
-
-		// TODO asking questions
-
 	})
 
 	gm.BroadcastToLobby(lobbyID, "game_start", OutgoingStartGamePacket{
-		Countdown: 5,
+		Countdown:  5,
 		Categories: categories,
 	})
 }

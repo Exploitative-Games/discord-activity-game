@@ -100,19 +100,6 @@ func (event *IncomingLeaveLobbyPacket) Process(client *Client) (interface{}, err
 
 	client.manager.RemoveClientFromLobby(lobby.ID, client)
 
-	// lets be sure lobby isnt closed
-	if lobby != nil {
-		client.manager.BroadcastToLobby(lobby.ID, "player_left", OutgoingLobbyPlayerLeftPacket{
-			Player: client.DiscordUser,
-		})
-
-		if lobby.startCountdown != nil {
-			lobby.startCountdown.Stop()
-
-			client.manager.BroadcastToLobby(lobby.ID, "game_start_countdown_cancel", EmptyPacket{})
-		}
-	}
-
 	client.lobby = nil
 
 	return OutgoingLeaveLobbyPacket{}, nil
@@ -194,5 +181,44 @@ func (event *IncomingVotePacket) Process(client *Client) (interface{}, error) {
 }
 
 type OutgoingCategorySelectionPacket struct {
-	SelectedCategory string `json:"selected_category"`
+	SelectedCategory string         `json:"selected_category"`
+	Question         string         `json:"question"`
+	CurrentPlayer    discord.UserID `json:"current_player"`
+}
+
+type IncomingAnswerPacket struct {
+	Answer string `json:"answer"`
+}
+
+type OutgoingAnswerPacket struct {
+	Correct bool   `json:"correct"`
+	Answer  string `json:"answer"`
+}
+
+func (event *IncomingAnswerPacket) Process(client *Client) (interface{}, error) {
+	if client.lobby == nil {
+		return nil, errors.New("client_not_in_lobby")
+	}
+
+	if client.lobby.state != LOBBY_STATE_QUIZ_IN_PROGRESS {
+		return nil, errors.New("game_not_started")
+	}
+
+	if client.DiscordUser.ID != client.lobby.currentPlayerTurn {
+		return nil, errors.New("not_your_turn")
+	}
+
+	packet := OutgoingAnswerPacket{Answer: event.Answer}
+
+	packet.Correct = slices.Contains(client.lobby.question.PossibleAnswers, event.Answer)
+
+	if packet.Correct {
+		client.lobby.currentPlayerTurn = client.lobby.GetNextPlayer(client.DiscordUser.ID)
+	}
+
+	client.manager.BroadcastToLobby(client.lobby.ID, "answer", packet)
+
+	// TODO add cooldown for answering 
+
+	return nil, nil
 }

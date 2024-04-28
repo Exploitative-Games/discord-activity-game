@@ -2,6 +2,7 @@ package modules
 
 import (
 	"server-go/common"
+	"server-go/database"
 	"server-go/modules/discord_utils"
 	"time"
 
@@ -26,6 +27,8 @@ type Lobby struct {
 	state LobbyState
 
 	selectedCategories []int32
+	question           *database.Question
+	currentPlayerTurn  discord.UserID
 
 	startCountdown             *time.Timer
 	categorySelectionCountdown *time.Timer
@@ -54,4 +57,14 @@ func (l *Lobby) GetPlayers() []*discord_utils.User {
 	}
 
 	return players
+}
+
+func (l *Lobby) GetNextPlayer(userID discord.UserID) discord.UserID {
+	for _, client := range l.Clients {
+		if client.DiscordUser.ID != userID {
+			return client.DiscordUser.ID
+		}
+	}
+
+	return 0
 }
