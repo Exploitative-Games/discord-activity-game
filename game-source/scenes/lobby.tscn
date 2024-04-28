@@ -27,6 +27,7 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [node name="Lobby" type="CanvasLayer"]
+visible = false
 script = ExtResource("1_j2088")
 
 [node name="Players" type="Panel" parent="."]
@@ -192,6 +193,24 @@ layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="Counter" type="Label" parent="Messages/VBoxContainer/Panel"]
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -68.5
+offset_top = -10.0
+offset_right = 68.5
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ys06s")
+horizontal_alignment = 1
 
 [node name="LineEdit" type="LineEdit" parent="Messages/VBoxContainer"]
 auto_translate_mode = 1

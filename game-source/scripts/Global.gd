@@ -18,7 +18,6 @@ signal lobby_loaded
 
 var main_menu:CanvasLayer
 
-const LOBBY = preload("res://scenes/lobby.tscn")
 const CLIENT_ID = "1229029126980112476"
 
 #var label:Label
@@ -84,8 +83,9 @@ func load_lobby(lob:Lobby, new:bool = false) -> void:
 	if not new: await _loading_screen(lob.id)
 	if not load_cancel_flag: 
 		main_menu.hide()
-		var l = LOBBY.instantiate()
-		get_tree().root.add_child(l)
+		#var l = LOBBY.instantiate()
+		#get_tree().root.add_child(l)
+		GameLobby.load()
 		lobby = lob
 	load_cancel_flag = false
 	await get_tree().physics_frame

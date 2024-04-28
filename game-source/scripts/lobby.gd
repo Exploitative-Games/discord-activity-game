@@ -23,6 +23,7 @@ func _connect_signals():
 	line.text_submitted.connect(Callable(self, "_on_message_sent").unbind(1))
 	GameSocket.player_joined_received.connect(Callable(self, "_on_player_joined"))
 	GameSocket.game_start_received.connect(Callable(self, "_on_game_start"))
+	GameSocket.game_start_countdown_start_received.connect(Callable(self, "_on_game_start_countdown_start"))
 
 func _update_players():
 	print(Global.lobby.players)
@@ -46,18 +47,26 @@ func _update_players():
 	player_2.get_node("Avatar").texture = await Global.get_avatar(Global.user)
 
 func _ready() -> void:
-	await Global.lobby_loaded
 	_connect_signals()
+	
+func load():
+	Global.main_menu.hide()
+	show()
+	await Global.lobby_loaded
 	_update_players()
 
-func _on_game_start():
+func _on_game_start(res:Dictionary):
 	category_select.scale = Vector2.ZERO
 	category_select.show()
 	create_tween().tween_property(category_select, "scale", Vector2.ONE, 0.2).set_trans(Tween.TRANS_QUINT)
-	_selection_timer()
+	_timer($"Category Select/Counter", 10)
 	await selection_finished
 	
 	line.grab_focus()
+
+func _on_game_start_countdown_start(res:Dictionary):
+	_timer($Messages/VBoxContainer/Panel/Counter, res["countdown"])
+	print("it werks")
 
 func _physics_process(_delta: float) -> void:
 	if timer != null:
@@ -65,14 +74,15 @@ func _physics_process(_delta: float) -> void:
 
 func _on_player_joined(res:Dictionary):
 	var new_player := GameSocket.dict_to_user(res["player"])
+	if new_player.id == Global.user.id: return
 	Global.lobby.players.append(new_player)
 	player_1.get_node("VBoxContainer/name").text = new_player.name
 	player_1.get_node("VBoxContainer/handle").text = "@" + new_player.handle
 	player_1.get_node("Avatar").texture = await Global.get_avatar(new_player)
 
-func _selection_timer() -> void:
-	counter = $"Category Select/Counter"
-	timer = get_tree().create_timer(10)
+func _timer(label:Label, secs:int) -> void:
+	counter = label
+	timer = get_tree().create_timer(secs)
 	await timer.timeout
 	counter = null
 	timer = null

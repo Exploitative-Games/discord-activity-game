@@ -16,6 +16,7 @@ signal connection_failed
 signal reconnect
 
 @onready var sock:WebSocketPeer
+
 const PING_INTERVAL:float = 5.0
 const CONNECTION_TIMEOUT_INTERVAL:float = 10.0
 
@@ -46,9 +47,10 @@ func start() -> void:
 		sock.poll()
 		if sock.get_available_packet_count():
 			var res := _get_response()
-			print("packet received: ", res)
 			var d:Dictionary = res["d"]
 			TOKEN = d["access_token"]
+			res["d"]["access_token"] = "[HIDDEN]"
+			print("[PACKET] ", res)
 			Global.user = dict_to_user(d["user"])
 			break
 		await get_tree().physics_frame
@@ -78,8 +80,13 @@ func _process(_delta: float) -> void:
 		WebSocketPeer.STATE_OPEN:
 			while sock.get_available_packet_count():
 				var res = _get_response()
-				assert(not emit_signal(res["op"] + "_received", res["d"]), "[ERROR] Signal for \"%s\" doesn't exist." % res["op"])
-				if res["op"] != "ping": print("packet received: ", res)
+				var sig:String = res["op"] + "_received"
+				assert(has_signal(sig), "[ERROR] Signal for \"%s\" doesn't exist." % sig)
+				#assert(not emit_signal(sig, res["d"]), "[ERROR] Signal for \"%s\" doesn't match the given arguments." % sig)
+				var err := emit_signal(sig, res["d"])
+				if err:
+					print(get_signal_connection_list(sig))
+				if res["op"] != "ping": print("[PACKET] ERR: ", err, " ", JSON.stringify(res, "\t", false))
 		WebSocketPeer.STATE_CONNECTING:
 			pass
 		WebSocketPeer.STATE_CLOSING:
