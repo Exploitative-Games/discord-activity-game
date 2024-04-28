@@ -5,6 +5,7 @@ import (
 	"server-go/database"
 	"server-go/modules/discord_utils"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -150,11 +151,11 @@ type OutgoingStartGamePacket struct {
 	Categories []database.Category `json:"categories"`
 }
 
-type IncomingVotePacket struct {
+type IncomingVoteCategoryPacket struct {
 	CategoryID int `json:"category_id"`
 }
 
-func (event *IncomingVotePacket) Process(client *Client) (interface{}, error) {
+func (event *IncomingVoteCategoryPacket) Process(client *Client) (interface{}, error) {
 	if client.lobby == nil {
 		return nil, errors.New("client_not_in_lobby")
 	}
@@ -210,7 +211,7 @@ func (event *IncomingAnswerPacket) Process(client *Client) (interface{}, error) 
 
 	packet := OutgoingAnswerPacket{Answer: event.Answer}
 
-	packet.Correct = slices.Contains(client.lobby.question.PossibleAnswers, event.Answer)
+	packet.Correct = slices.Contains(client.lobby.question.PossibleAnswers, strings.TrimSpace(strings.ToLower(event.Answer)))
 
 	if packet.Correct {
 		client.lobby.currentPlayerTurn = client.lobby.GetNextPlayer(client.DiscordUser.ID)
@@ -218,7 +219,7 @@ func (event *IncomingAnswerPacket) Process(client *Client) (interface{}, error) 
 
 	client.manager.BroadcastToLobby(client.lobby.ID, "answer", packet)
 
-	// TODO add cooldown for answering 
+	// TODO add cooldown for answering
 
 	return nil, nil
 }
