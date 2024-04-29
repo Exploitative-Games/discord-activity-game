@@ -194,11 +194,11 @@ func (gm *GameManager) StartGame(lobbyID int) {
 			QuestionCooldown: common.Config.AnswerTimeout,
 		})
 
-		lobby.quizCountdown = time.AfterFunc(time.Duration(common.Config.AnswerTimeout)*time.Second, func() {
+		lobby.quizCountdown = time.AfterFunc(time.Duration(common.Config.AnswerTimeout)*time.Second*2, func() {
 			lobby.currentPlayerTurn = lobby.GetNextPlayer(lobby.currentPlayerTurn)
 
 			lobby.quizCountdown.Reset(time.Duration(common.Config.AnswerTimeout) * time.Second)
-			
+
 			gm.BroadcastToLobby(lobby.ID, "turn_change", OutgoingTurnChangePacket{
 				CurrentPlayer: lobby.currentPlayerTurn,
 			})
