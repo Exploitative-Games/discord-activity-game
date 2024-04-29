@@ -178,7 +178,6 @@ custom_minimum_size = Vector2(0, 43)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxEmpty_ys06s")
-text = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?"
 horizontal_alignment = 1
 autowrap_mode = 3
 clip_text = true

@@ -1,5 +1,8 @@
 extends Node
 
+# signals are used for each socket to handle them easily
+
+# these ones can be sent using their respective functions.
 signal create_lobby_received(res:Dictionary)
 signal join_lobby_received(res:Dictionary)
 signal leave_lobby_received(res:Dictionary)
@@ -8,15 +11,19 @@ signal vote_category_received(res:Dictionary)
 signal answer_received(res:Dictionary) # bruh
 signal answer_question_received(res:Dictionary)
 
+# these ones are receive-only
 signal player_joined_received(res:Dictionary)
 signal player_left_received(res:Dictionary)
 signal game_start_received(res:Dictionary)
 signal game_start_countdown_start_received(res:Dictionary)
 signal game_start_countdown_cancel_received(res:Dictionary)
 signal game_quiz_start_received(res:Dictionary)
+signal turn_change_received(res:Dictionary)
 
+# regularly called ping signal to maintain the socket connection
 signal ping_received
 
+# these ones should be obvious
 signal connection_failed
 signal reconnect
 
@@ -28,12 +35,8 @@ const CONNECTION_TIMEOUT_INTERVAL:float = 10.0
 var TOKEN:String # scary
 var ping_timer:Timer
 
-func _connect_signals():
-	player_joined_received.connect(Callable(self, "_on_player_joined"))
-
 func _ready() -> void:
 	set_process(false)
-	_connect_signals()
 
 func start() -> void:
 	sock = WebSocketPeer.new()
@@ -149,12 +152,6 @@ func _ping() -> void:
 	var t := Time.get_ticks_msec()
 	await ping_received
 	print("[PING] delay: ", Time.get_ticks_msec() - t, "ms")
-
-# Below are all the sockets that are sent without a request.
-# Signals are used for each socket to handle them easily.
-
-func _on_player_joined(_res:Dictionary) -> void:
-	pass
 
 # Below are all the socket requests, remember to call them with "await".
 

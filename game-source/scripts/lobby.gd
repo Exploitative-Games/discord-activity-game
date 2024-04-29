@@ -15,6 +15,7 @@ var timer:SceneTreeTimer
 var counter:Label
 var selected_category:int = 1
 var categories:Array
+var countdown:int
 
 func _connect_signals():
 	for i in range(1,4):
@@ -26,6 +27,8 @@ func _connect_signals():
 	GameSocket.game_start_countdown_start_received.connect(Callable(self, "_on_game_start_countdown_start"))
 	GameSocket.game_start_countdown_cancel_received.connect(Callable(self, "_on_game_start_countdown_cancel"))
 	GameSocket.game_quiz_start_received.connect(Callable(self, "_on_game_quiz_start"))
+	GameSocket.answer_received.connect(Callable(self, "_on_answer_received"))
+	GameSocket.turn_change_received.connect(Callable(self, "_on_turn_change"))
 
 func _update_players():
 	#for player in Global.lobby.players:
@@ -68,7 +71,8 @@ func _on_game_start(res:Dictionary):
 		$"Category Select/VBoxContainer".get_child(i+1).text = categories[i].name
 
 func _on_game_start_countdown_start(res:Dictionary):
-	_timer($Messages/VBoxContainer/Panel/Counter, res["countdown"])
+	await _timer($Messages/VBoxContainer/Panel/Counter, res["countdown"])
+	$Messages/VBoxContainer/Panel/Counter.text = ""
 
 func _on_game_start_countdown_cancel(_res:Dictionary):
 	player_1.get_node("VBoxContainer/name").text = ""
@@ -90,7 +94,8 @@ func _on_game_quiz_start(res:Dictionary):
 	$Messages/VBoxContainer/Question.text = res["question"]
 	if int(res["current_player"]) == Global.user.id:
 		line.editable = true
-		_timer($Messages/VBoxContainer/Panel/Timer/Label, 10)
+		countdown = int(res["question_cooldown"])
+		_timer($Messages/VBoxContainer/Panel/Timer/Label, countdown)
 
 func _physics_process(_delta: float) -> void:
 	if timer != null:
@@ -129,15 +134,27 @@ func _on_message_sent():
 	var text = line.text
 	if text.length() > 0:
 		line.clear()
-		var msg := await _send(text)
+		var msg := await _send(text, Message.Directions.Right)
 		var res := await GameSocket.answer_question(text)
 		msg.state = Message.State.Correct if res["correct"] else Message.State.Wrong
 
-func _send(answer:String) -> Message:
+func _on_answer_received(res:Dictionary):
+	if int(res["player"]) != Global.user.id:
+		var msg := await _send(res["answer"], Message.Directions.Left)
+		msg.state = Message.State.Correct if res["correct"] else Message.State.Wrong
+
+func _send(answer:String, direction:Message.Directions) -> Message:
 	var msg:Message = MESSAGE.instantiate()
-	msg.direction = Message.Directions.Right
+	msg.direction = direction
 	msg.text = answer
 	msg_history.add_child(msg)
 	await get_tree().physics_frame
 	msg.show()
+	$Messages/VBoxContainer/Panel/ScrollContainer.set_deferred("scroll_vertical", 9999999999)
 	return msg
+
+func _on_turn_change(res:Dictionary):
+	if int(res["current_player"]) == Global.user.id:
+		line.editable = true
+		_timer($Messages/VBoxContainer/Panel/Timer/Label, countdown)
+		

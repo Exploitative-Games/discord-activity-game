@@ -62,6 +62,7 @@ enum State {Neutral, Wrong, Correct}
 					cross_left.show()
 				else:
 					cross_right.show()
+		state = val
 
 func _init() -> void:
 	visible = false
