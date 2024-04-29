@@ -181,12 +181,17 @@ func (gm *GameManager) StartGame(lobbyID int) {
 
 		lobby.question = &question		
 		
-
 		gm.BroadcastToLobby(lobbyID, "game_quiz_start", OutgoingCategorySelectionPacket{
 			SelectedCategory: cat.Name,
 			Question:         question.Question,
 			CurrentPlayer:    lobby.currentPlayerTurn,
+			QuestionCooldown: 5,
 		})
+
+		lobby.quizCountdown = time.AfterFunc(5*time.Second, func() {
+			lobby.currentPlayerTurn = lobby.GetNextPlayer(lobby.currentPlayerTurn)
+		})
+
 	})
 
 	gm.BroadcastToLobby(lobbyID, "game_start", OutgoingStartGamePacket{

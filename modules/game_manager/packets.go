@@ -185,6 +185,7 @@ type OutgoingCategorySelectionPacket struct {
 	SelectedCategory string         `json:"selected_category"`
 	Question         string         `json:"question"`
 	CurrentPlayer    discord.UserID `json:"current_player"`
+	QuestionCooldown int            `json:"question_cooldown"`
 }
 
 type IncomingAnswerQuestionPacket struct {
@@ -192,8 +193,9 @@ type IncomingAnswerQuestionPacket struct {
 }
 
 type OutgoingAnswerPacket struct {
-	Correct bool   `json:"correct"`
-	Answer  string `json:"answer"`
+	Player  discord.UserID `json:"player"`
+	Correct bool           `json:"correct"`
+	Answer  string         `json:"answer"`
 }
 
 func (event *IncomingAnswerQuestionPacket) Process(client *Client) (interface{}, error) {
@@ -209,12 +211,26 @@ func (event *IncomingAnswerQuestionPacket) Process(client *Client) (interface{},
 		return nil, errors.New("not_your_turn")
 	}
 
-	packet := OutgoingAnswerPacket{Answer: event.Answer}
+	packet := OutgoingAnswerPacket{Answer: event.Answer, Player: client.DiscordUser.ID}
 
 	packet.Correct = slices.Contains(client.lobby.question.PossibleAnswers, strings.TrimSpace(strings.ToLower(event.Answer)))
-
+	
 	if packet.Correct {
 		client.lobby.currentPlayerTurn = client.lobby.GetNextPlayer(client.DiscordUser.ID)
+		
+		if client.lobby.quizCountdown != nil {
+			client.lobby.quizCountdown.Stop()
+		}
+
+		client.lobby.quizCountdown = time.AfterFunc(5*time.Second, func() {
+			client.lobby.currentPlayerTurn = client.lobby.GetNextPlayer(client.DiscordUser.ID)
+
+			client.manager.BroadcastToLobby(client.lobby.ID, "turn_change", OutgoingTurnChangePacket{
+				CurrentPlayer: client.lobby.currentPlayerTurn,
+			})
+		})
+		
+		//TODO handle possible answers running out
 	}
 
 	client.manager.BroadcastToLobby(client.lobby.ID, "answer", packet)
@@ -222,4 +238,8 @@ func (event *IncomingAnswerQuestionPacket) Process(client *Client) (interface{},
 	// TODO add cooldown for answering
 
 	return nil, nil
+}
+
+type OutgoingTurnChangePacket struct {
+	CurrentPlayer discord.UserID `json:"current_player"`
 }
