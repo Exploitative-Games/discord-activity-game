@@ -158,11 +158,16 @@ func (gm *GameManager) StartGame(lobbyID int) {
 
 		var maxCategoryID int
 
-		for categoryID, count := range categorySelections {
-			if count > categorySelections[maxCategoryID] {
-				maxCategoryID = categoryID
+		if len(categorySelections) == 0 {
+			maxCategoryID = int(lobby.selectedCategories[rand.IntN(len(lobby.selectedCategories) - 1)])
+		} else {
+			for categoryID, count := range categorySelections {
+				if count > categorySelections[maxCategoryID] {
+					maxCategoryID = categoryID
+				}
 			}
 		}
+
 
 		cat, err := questionmanager.GetCategoryWithID(maxCategoryID)
 		if err != nil {
