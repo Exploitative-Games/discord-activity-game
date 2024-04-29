@@ -221,15 +221,8 @@ func (event *IncomingAnswerQuestionPacket) Process(client *Client) (interface{},
 
 		if client.lobby.quizCountdown != nil {
 			client.lobby.quizCountdown.Stop()
+			client.lobby.quizCountdown.Reset(time.Duration(common.Config.AnswerTimeout) * time.Second)
 		}
-
-		client.lobby.quizCountdown = time.AfterFunc(time.Duration(common.Config.AnswerTimeout)*time.Second, func() {
-			client.lobby.currentPlayerTurn = client.lobby.GetNextPlayer(client.DiscordUser.ID)
-
-			client.manager.BroadcastToLobby(client.lobby.ID, "turn_change", OutgoingTurnChangePacket{
-				CurrentPlayer: client.lobby.currentPlayerTurn,
-			})
-		})
 
 		//TODO handle possible answers running out
 	}
