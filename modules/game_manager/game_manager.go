@@ -153,13 +153,15 @@ func (gm *GameManager) StartGame(lobbyID int) {
 			}
 			num++
 
-			categorySelections[client.votedCategory]++
+			if client.votedCategory != 0 {
+				categorySelections[client.votedCategory]++
+			}
 		}
 
 		var maxCategoryID int
 
 		if len(categorySelections) == 0 {
-			maxCategoryID = int(lobby.selectedCategories[rand.IntN(len(lobby.selectedCategories) - 1)])
+			maxCategoryID = int(lobby.selectedCategories[rand.IntN(len(lobby.selectedCategories)-1)])
 		} else {
 			for categoryID, count := range categorySelections {
 				if count > categorySelections[maxCategoryID] {
@@ -167,7 +169,6 @@ func (gm *GameManager) StartGame(lobbyID int) {
 				}
 			}
 		}
-
 
 		cat, err := questionmanager.GetCategoryWithID(maxCategoryID)
 		if err != nil {
@@ -193,7 +194,7 @@ func (gm *GameManager) StartGame(lobbyID int) {
 			QuestionCooldown: common.Config.AnswerTimeout,
 		})
 
-		lobby.quizCountdown = time.AfterFunc(time.Duration(common.Config.AnswerTimeout) * time.Second, func() {
+		lobby.quizCountdown = time.AfterFunc(time.Duration(common.Config.AnswerTimeout)*time.Second, func() {
 			lobby.currentPlayerTurn = lobby.GetNextPlayer(lobby.currentPlayerTurn)
 
 			gm.BroadcastToLobby(lobby.ID, "turn_change", OutgoingTurnChangePacket{
