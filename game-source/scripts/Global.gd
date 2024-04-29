@@ -39,6 +39,8 @@ class User:
 		self.name = name
 		self.handle = handle
 		self.id = id
+		if discriminator > 0:
+			self.handle += "#" + str(discriminator)
 		if avatar == "":
 			if discriminator > 0:
 				self.avatar = "https://cdn.discordapp.com/embed/avatars/%d.png" % [discriminator % 5]

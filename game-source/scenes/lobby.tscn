@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://d2xuhm544v287"]
+[gd_scene load_steps=10 format=4 uid="uid://d2xuhm544v287"]
 
 [ext_resource type="Script" path="res://scripts/lobby.gd" id="1_j2088"]
 [ext_resource type="Theme" uid="uid://p6unsuxp1vug" path="res://themes/main.tres" id="2_8hsvc"]
@@ -25,6 +25,22 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6cw0q"]
+bg_color = Color(0.780566, 0.802529, 0.880061, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.658929, 0.692594, 0.80142, 1)
+corner_radius_top_left = 19
+corner_radius_top_right = 19
+corner_radius_bottom_right = 19
+corner_radius_bottom_left = 19
+shadow_color = Color(0, 0, 0, 0.101961)
+shadow_size = 4
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kuksr"]
 
 [node name="Lobby" type="CanvasLayer"]
 visible = false
@@ -174,6 +190,31 @@ custom_minimum_size = Vector2(0, 320)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_8k3a7")
 
+[node name="Timer" type="Panel" parent="Messages/VBoxContainer/Panel"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 6.5
+offset_right = 20.0
+offset_bottom = 46.5
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_6cw0q")
+
+[node name="Label" type="Label" parent="Messages/VBoxContainer/Panel/Timer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kuksr")
+text = "0.0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="ScrollContainer" type="ScrollContainer" parent="Messages/VBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = -1
@@ -218,6 +259,7 @@ auto_translate_mode = 1
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
+editable = false
 context_menu_enabled = false
 
 [node name="Control" type="Control" parent="Messages/VBoxContainer"]

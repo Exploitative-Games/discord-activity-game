@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=4 uid="uid://br563hesnwrop"]
+[gd_scene load_steps=7 format=4 uid="uid://br563hesnwrop"]
 
-[ext_resource type="Theme" uid="uid://b7chnusbff4s7" path="res://themes/msg_left.tres" id="1_o2k3h"]
+[ext_resource type="Theme" uid="uid://b7chnusbff4s7" path="res://themes/msg_left.tres" id="1_xx3xw"]
 [ext_resource type="Script" path="res://scripts/message.gd" id="2_0by33"]
+[ext_resource type="Texture2D" uid="uid://wn6j25a1qci8" path="res://assets/checkmark.png" id="3_d6a8i"]
+[ext_resource type="Texture2D" uid="uid://dhgguh5bwfbge" path="res://assets/cross.png" id="4_ar6nw"]
 
 [sub_resource type="Gradient" id="Gradient_yr4ja"]
 offsets = PackedFloat32Array(0)
@@ -19,8 +21,8 @@ layout_direction = 2
 offset_right = 123.0
 offset_bottom = 48.0
 size_flags_horizontal = 0
-theme = ExtResource("1_o2k3h")
-text = "fdsegg"
+theme = ExtResource("1_xx3xw")
+text = "[s]fdsegg"
 script = ExtResource("2_0by33")
 
 [node name="Avatar Left" type="TextureRect" parent="."]
@@ -51,3 +53,68 @@ grow_horizontal = 0
 size_flags_vertical = 0
 texture = SubResource("GradientTexture2D_5vt6h")
 expand_mode = 1
+
+[node name="Checkmark Left" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -24.0
+offset_top = -26.0
+offset_bottom = -2.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("3_d6a8i")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Checkmark Right" type="TextureRect" parent="."]
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -26.0
+offset_right = 24.0
+offset_bottom = -2.0
+grow_vertical = 0
+texture = ExtResource("3_d6a8i")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Cross Left" type="TextureRect" parent="."]
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -24.0
+offset_top = -26.0
+offset_bottom = -2.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("4_ar6nw")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Cross Right" type="TextureRect" parent="."]
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -26.0
+offset_right = 24.0
+offset_bottom = -2.0
+grow_vertical = 0
+texture = ExtResource("4_ar6nw")
+expand_mode = 1
+stretch_mode = 4

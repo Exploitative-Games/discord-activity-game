@@ -5,12 +5,15 @@ signal join_lobby_received(res:Dictionary)
 signal leave_lobby_received(res:Dictionary)
 signal get_lobby_list_received(res:Dictionary)
 signal vote_category_received(res:Dictionary)
+signal answer_received(res:Dictionary) # bruh
+signal answer_question_received(res:Dictionary)
 
 signal player_joined_received(res:Dictionary)
 signal player_left_received(res:Dictionary)
 signal game_start_received(res:Dictionary)
 signal game_start_countdown_start_received(res:Dictionary)
 signal game_start_countdown_cancel_received(res:Dictionary)
+signal game_quiz_start_received(res:Dictionary)
 
 signal ping_received
 
@@ -84,7 +87,7 @@ func _process(_delta: float) -> void:
 				var res = _get_response()
 				var sig:String = res["op"] + "_received"
 				if not has_signal(sig): push_error("[SOCK] Signal for \"%s\" doesn't exist." % sig)
-				var err := emit_signal(sig, res["d"])
+				emit_signal(sig, res["d"])
 				if res["op"] != "ping": print("[SOCK] packet received: ", JSON.stringify(res, "\t", false))
 		WebSocketPeer.STATE_CONNECTING:
 			pass
@@ -150,7 +153,7 @@ func _ping() -> void:
 # Below are all the sockets that are sent without a request.
 # Signals are used for each socket to handle them easily.
 
-func _on_player_joined(res:Dictionary) -> void:
+func _on_player_joined(_res:Dictionary) -> void:
 	pass
 
 # Below are all the socket requests, remember to call them with "await".
@@ -200,3 +203,14 @@ func vote_category(id:int) -> void:
 	_send_request(req)
 	await vote_category_received
 	return
+
+func answer_question(answer:String) -> Dictionary:
+	var req := {
+		"op": "answer_question",
+		"d": {
+			"answer": answer
+		}
+	}
+	_send_request(req)
+	return await answer_received # bruh
+	
