@@ -1,7 +1,5 @@
 extends CanvasLayer
 
-signal selection_finished
-
 @onready var msg_history: VBoxContainer = $Messages/VBoxContainer/Panel/ScrollContainer/VBoxContainer
 @onready var line: LineEdit = $Messages/VBoxContainer/LineEdit
 @onready var category_select: Panel = $"Category Select"
@@ -27,6 +25,7 @@ func _connect_signals():
 	GameSocket.game_start_received.connect(Callable(self, "_on_game_start"))
 	GameSocket.game_start_countdown_start_received.connect(Callable(self, "_on_game_start_countdown_start"))
 	GameSocket.game_start_countdown_cancel_received.connect(Callable(self, "_on_game_start_countdown_cancel"))
+	GameSocket.game_quiz_start_received.connect(Callable(self, "_on_game_quiz_start"))
 
 func _update_players():
 	#for player in Global.lobby.players:
@@ -55,6 +54,7 @@ func _ready() -> void:
 func load_lobby():
 	Global.main_menu.hide()
 	show()
+	line.editable = false
 	await Global.lobby_loaded
 	_update_players()
 
@@ -66,14 +66,11 @@ func _on_game_start(res:Dictionary):
 	categories = res["categories"]
 	for i in 3:
 		$"Category Select/VBoxContainer".get_child(i+1).text = categories[i].name
-	await selection_finished
-	
-	line.grab_focus()
 
 func _on_game_start_countdown_start(res:Dictionary):
 	_timer($Messages/VBoxContainer/Panel/Counter, res["countdown"])
 
-func _on_game_start_countdown_cancel(res:Dictionary):
+func _on_game_start_countdown_cancel(_res:Dictionary):
 	player_1.get_node("VBoxContainer/name").text = ""
 	player_1.get_node("VBoxContainer/handle").text = ""
 	player_1.get_node("Avatar").texture = Global.DEFAULT_AVATAR
@@ -86,6 +83,14 @@ func _on_game_start_countdown_cancel(res:Dictionary):
 	timer = null
 	counter = null
 	$Messages/VBoxContainer/Panel/Counter.text = "waiting for another player"
+
+func _on_game_quiz_start(res:Dictionary):
+	category_select.hide()
+	line.grab_focus()
+	$Messages/VBoxContainer/Question.text = res["question"]
+	if int(res["current_player"]) == Global.user.id:
+		line.editable = true
+		_timer($Messages/VBoxContainer/Panel/Timer/Label, 10)
 
 func _physics_process(_delta: float) -> void:
 	if timer != null:
@@ -121,14 +126,18 @@ func _on_category_selected(idx:int):
 			child.disabled = true
 
 func _on_message_sent():
-	if line.text.length() > 0:
-		_send(line.text)
+	var text = line.text
+	if text.length() > 0:
 		line.clear()
+		var msg := await _send(text)
+		var res := await GameSocket.answer_question(text)
+		msg.state = Message.State.Correct if res["correct"] else Message.State.Wrong
 
-func _send(answer:String):
+func _send(answer:String) -> Message:
 	var msg:Message = MESSAGE.instantiate()
 	msg.direction = Message.Directions.Right
 	msg.text = answer
 	msg_history.add_child(msg)
 	await get_tree().physics_frame
 	msg.show()
+	return msg
