@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=4 uid="uid://l6rl06bxwj6b"]
+[gd_scene load_steps=5 format=4 uid="uid://l6rl06bxwj6b"]
 
 [ext_resource type="Script" path="res://scripts/initial_loading.gd" id="1_nau5b"]
 [ext_resource type="Theme" uid="uid://p6unsuxp1vug" path="res://themes/main.tres" id="2_deh3x"]
 [ext_resource type="Texture2D" uid="uid://dhew8ujihooa6" path="res://assets/refresh.png" id="3_714lf"]
+[ext_resource type="Script" path="res://scripts/ButtonEx.gd" id="4_g14u0"]
 
 [node name="Initial Loading" type="CanvasLayer"]
 script = ExtResource("1_nau5b")
@@ -108,3 +109,4 @@ size_flags_horizontal = 8
 size_flags_vertical = 3
 text = "Retry"
 expand_icon = true
+script = ExtResource("4_g14u0")

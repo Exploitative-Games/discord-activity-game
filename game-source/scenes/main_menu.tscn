@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=4 uid="uid://rbc13fu3e6c8"]
+[gd_scene load_steps=9 format=4 uid="uid://rbc13fu3e6c8"]
 
 [ext_resource type="Theme" uid="uid://p6unsuxp1vug" path="res://themes/main.tres" id="1_4tj32"]
 [ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_cbrgg"]
 [ext_resource type="Theme" uid="uid://gkeyqye7jgjl" path="res://themes/negative.tres" id="3_62tl5"]
+[ext_resource type="Script" path="res://scripts/ButtonEx.gd" id="3_661hy"]
 [ext_resource type="Texture2D" uid="uid://dhew8ujihooa6" path="res://assets/refresh.png" id="3_v5alj"]
 [ext_resource type="Script" path="res://scripts/player_info.gd" id="4_i2ol8"]
 [ext_resource type="Texture2D" uid="uid://dblfd8nswfhkb" path="res://assets/default_avatar.tres" id="6_fbyq3"]
@@ -48,18 +49,21 @@ text = "Lorem ipsum"
 layout_mode = 2
 size_flags_vertical = 3
 text = "Play"
+script = ExtResource("3_661hy")
 
 [node name="Settings" type="Button" parent="Main Menu/VBoxContainer"]
 auto_translate_mode = 1
 layout_mode = 2
 size_flags_vertical = 3
 text = "Settings"
+script = ExtResource("3_661hy")
 
 [node name="Credits" type="Button" parent="Main Menu/VBoxContainer"]
 auto_translate_mode = 1
 layout_mode = 2
 size_flags_vertical = 3
 text = "Credits"
+script = ExtResource("3_661hy")
 
 [node name="Lobby Select" type="Panel" parent="."]
 auto_translate_mode = 1
@@ -106,6 +110,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 3
 text = "New Room"
+script = ExtResource("3_661hy")
 
 [node name="Refresh" type="Button" parent="Lobby Select/VBoxContainer/HBoxContainer2"]
 auto_translate_mode = 1
@@ -115,6 +120,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 3
 icon = ExtResource("3_v5alj")
 expand_icon = true
+script = ExtResource("3_661hy")
 
 [node name="ItemList" type="ItemList" parent="Lobby Select/VBoxContainer"]
 custom_minimum_size = Vector2(0, 180)
@@ -132,6 +138,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Join
 "
+script = ExtResource("3_661hy")
 
 [node name="Back" type="Button" parent="Lobby Select/VBoxContainer/HBoxContainer"]
 auto_translate_mode = 1
@@ -140,6 +147,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("3_62tl5")
 text = "Back"
+script = ExtResource("3_661hy")
 
 [node name="Debug" type="Button" parent="Lobby Select/VBoxContainer/HBoxContainer"]
 auto_translate_mode = 1
@@ -148,6 +156,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("3_62tl5")
 text = "Debug"
+script = ExtResource("3_661hy")
 
 [node name="Credits" type="Panel" parent="."]
 auto_translate_mode = 1
@@ -192,6 +201,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("3_62tl5")
 text = "Back"
+script = ExtResource("3_661hy")
 
 [node name="Create Room" type="Panel" parent="."]
 auto_translate_mode = 1
@@ -247,6 +257,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Create"
+script = ExtResource("3_661hy")
 
 [node name="Back" type="Button" parent="Create Room/VBoxContainer/HBoxContainer"]
 auto_translate_mode = 1
@@ -255,6 +266,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("3_62tl5")
 text = "Back"
+script = ExtResource("3_661hy")
 
 [node name="Player Info" type="Panel" parent="."]
 auto_translate_mode = 1

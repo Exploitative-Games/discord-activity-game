@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=4 uid="uid://d2xuhm544v287"]
+[gd_scene load_steps=11 format=4 uid="uid://d2xuhm544v287"]
 
 [ext_resource type="Script" path="res://scripts/lobby.gd" id="1_j2088"]
 [ext_resource type="Theme" uid="uid://p6unsuxp1vug" path="res://themes/main.tres" id="2_8hsvc"]
 [ext_resource type="Texture2D" uid="uid://b6hbbl61kern2" path="res://assets/arrow.png" id="3_3ja6k"]
+[ext_resource type="Script" path="res://scripts/ButtonEx.gd" id="3_8ayc7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ys06s"]
 
@@ -271,6 +272,7 @@ layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
 text = "Send"
+script = ExtResource("3_8ayc7")
 
 [node name="Category Select" type="Panel" parent="."]
 visible = false
@@ -329,6 +331,7 @@ size_flags_vertical = 3
 focus_mode = 0
 text = "asdfghjk"
 clip_text = true
+script = ExtResource("3_8ayc7")
 
 [node name="Left Arrow" type="TextureRect" parent="Category Select/VBoxContainer/Category 1"]
 visible = false
@@ -369,6 +372,7 @@ size_flags_vertical = 3
 focus_mode = 0
 text = "asdfghjk"
 clip_text = true
+script = ExtResource("3_8ayc7")
 
 [node name="Left Arrow" type="TextureRect" parent="Category Select/VBoxContainer/Category 2"]
 auto_translate_mode = 1
@@ -410,6 +414,7 @@ size_flags_vertical = 3
 focus_mode = 0
 text = "asdfghjk"
 clip_text = true
+script = ExtResource("3_8ayc7")
 
 [node name="Left Arrow" type="TextureRect" parent="Category Select/VBoxContainer/Category 3"]
 auto_translate_mode = 1

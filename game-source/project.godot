@@ -24,6 +24,7 @@ Global="*res://scripts/Global.gd"
 GameSocket="*res://scripts/GameSocket.gd"
 Background="*res://scenes/background.tscn"
 GameLobby="*res://scenes/lobby.tscn"
+SoundManager="*res://scenes/sound_manager.tscn"
 
 [debug]
 

@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=4 uid="uid://jegptoqn5uxc"]
+
+[ext_resource type="Script" path="res://scripts/SoundManager.gd" id="1_0x1m4"]
+[ext_resource type="AudioStream" uid="uid://dfivmn0138aj3" path="res://assets/press.ogg" id="2_rrjes"]
+
+[node name="Sound Manager" type="Node"]
+script = ExtResource("1_0x1m4")
+
+[node name="Press" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_rrjes")

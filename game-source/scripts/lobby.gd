@@ -157,4 +157,6 @@ func _on_turn_change(res:Dictionary):
 	if int(res["current_player"]) == Global.user.id:
 		line.editable = true
 		_timer($Messages/VBoxContainer/Panel/Timer/Label, countdown)
+	else:
+		line.editable = false
 		
