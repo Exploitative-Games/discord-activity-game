@@ -19,6 +19,7 @@ type ConfigStr struct {
 	BotToken            string    `json:"bot_token"`
 	DiscordWebhook      string    `json:"discord_webhook"`
 	AdminToken          string    `json:"admin_token"`
+	AnswerTimeout       int       `json:"answer_timeout"`
 }
 
 type ConfigDB struct {

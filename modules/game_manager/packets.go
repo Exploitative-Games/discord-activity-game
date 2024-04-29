@@ -2,6 +2,7 @@ package modules
 
 import (
 	"errors"
+	"server-go/common"
 	"server-go/database"
 	"server-go/modules/discord_utils"
 	"slices"
@@ -214,22 +215,22 @@ func (event *IncomingAnswerQuestionPacket) Process(client *Client) (interface{},
 	packet := OutgoingAnswerPacket{Answer: event.Answer, Player: client.DiscordUser.ID}
 
 	packet.Correct = slices.Contains(client.lobby.question.PossibleAnswers, strings.TrimSpace(strings.ToLower(event.Answer)))
-	
+
 	if packet.Correct {
 		client.lobby.currentPlayerTurn = client.lobby.GetNextPlayer(client.DiscordUser.ID)
-		
+
 		if client.lobby.quizCountdown != nil {
 			client.lobby.quizCountdown.Stop()
 		}
 
-		client.lobby.quizCountdown = time.AfterFunc(5*time.Second, func() {
+		client.lobby.quizCountdown = time.AfterFunc(time.Duration(common.Config.AnswerTimeout)*time.Second, func() {
 			client.lobby.currentPlayerTurn = client.lobby.GetNextPlayer(client.DiscordUser.ID)
 
 			client.manager.BroadcastToLobby(client.lobby.ID, "turn_change", OutgoingTurnChangePacket{
 				CurrentPlayer: client.lobby.currentPlayerTurn,
 			})
 		})
-		
+
 		//TODO handle possible answers running out
 	}
 
