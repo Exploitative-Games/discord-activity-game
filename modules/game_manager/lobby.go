@@ -29,6 +29,7 @@ type Lobby struct {
 	selectedCategories []int32
 	question           *database.Question
 	currentPlayerTurn  discord.UserID
+	usedWords          []string
 
 	startCountdown             *time.Timer
 	categorySelectionCountdown *time.Timer

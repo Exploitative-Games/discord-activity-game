@@ -214,7 +214,20 @@ func (event *IncomingAnswerQuestionPacket) Process(client *Client) (interface{},
 
 	packet := OutgoingAnswerPacket{Answer: event.Answer, Player: client.DiscordUser.ID}
 
-	packet.Correct = slices.Contains(client.lobby.question.PossibleAnswers, strings.TrimSpace(strings.ToLower(event.Answer)))
+	if slices.Contains(client.lobby.question.PossibleAnswers, strings.TrimSpace(strings.ToLower(event.Answer))) {
+		if slices.Contains(client.lobby.usedWords, strings.TrimSpace(strings.ToLower(event.Answer))) {
+			packet.Correct = false
+		} else {
+			packet.Correct = true
+			client.lobby.usedWords = append(client.lobby.usedWords, strings.TrimSpace(strings.ToLower(event.Answer)))
+
+			if len(client.lobby.usedWords) == len(client.lobby.question.PossibleAnswers) {
+				client.lobby.state = LOBBY_STATE_CATEGORY_SELECTION
+				client.manager.BroadcastToLobby(client.lobby.ID, "game_end", OutgoingGameEndPacket{Winner: 0})
+				client.manager.RestartLobby(client.lobby)
+			}
+		}
+	}
 
 	if packet.Correct {
 		client.lobby.currentPlayerTurn = client.lobby.GetNextPlayer(client.DiscordUser.ID)

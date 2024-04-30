@@ -194,16 +194,14 @@ func (gm *GameManager) StartGame(lobbyID int) {
 			QuestionCooldown: common.Config.AnswerTimeout,
 		})
 
+		lobby.usedWords = []string{}
+
 		lobby.quizCountdown = time.AfterFunc(time.Duration(common.Config.AnswerTimeout)*time.Second*2, func() {
 			gm.BroadcastToLobby(lobby.ID, "game_end", OutgoingGameEndPacket{
 				Winner: lobby.GetNextPlayer(lobby.currentPlayerTurn),
 			})
 
-			lobby.state = LOBBY_STATE_WAITING
-
-			if lobby.startCountdown != nil {
-				lobby.startCountdown.Reset(3 * time.Second)
-			}
+			gm.RestartLobby(lobby)
 		})
 	})
 
@@ -211,4 +209,12 @@ func (gm *GameManager) StartGame(lobbyID int) {
 		Countdown:  5,
 		Categories: categories,
 	})
+}
+
+func (gm *GameManager) RestartLobby(lobby *Lobby) {
+	lobby.state = LOBBY_STATE_WAITING
+
+	if lobby.startCountdown != nil {
+		lobby.startCountdown.Reset(3 * time.Second)
+	}
 }
