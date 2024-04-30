@@ -195,15 +195,16 @@ func (gm *GameManager) StartGame(lobbyID int) {
 		})
 
 		lobby.quizCountdown = time.AfterFunc(time.Duration(common.Config.AnswerTimeout)*time.Second*2, func() {
-			lobby.currentPlayerTurn = lobby.GetNextPlayer(lobby.currentPlayerTurn)
-
-			lobby.quizCountdown.Reset(time.Duration(common.Config.AnswerTimeout) * time.Second)
-
-			gm.BroadcastToLobby(lobby.ID, "turn_change", OutgoingTurnChangePacket{
-				CurrentPlayer: lobby.currentPlayerTurn,
+			gm.BroadcastToLobby(lobby.ID, "game_end", OutgoingGameEndPacket{
+				Winner: lobby.GetNextPlayer(lobby.currentPlayerTurn),
 			})
-		})
 
+			lobby.state = LOBBY_STATE_WAITING
+
+			if lobby.startCountdown != nil {
+				lobby.startCountdown.Reset(3 * time.Second)
+			}
+		})
 	})
 
 	gm.BroadcastToLobby(lobbyID, "game_start", OutgoingStartGamePacket{

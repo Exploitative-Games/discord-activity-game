@@ -237,3 +237,7 @@ func (event *IncomingAnswerQuestionPacket) Process(client *Client) (interface{},
 type OutgoingTurnChangePacket struct {
 	CurrentPlayer discord.UserID `json:"current_player"`
 }
+
+type OutgoingGameEndPacket struct {
+	Winner discord.UserID `json:"winner"`
+}
