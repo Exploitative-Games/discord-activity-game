@@ -140,13 +140,13 @@ func _on_message_sent():
 	var text = line.text
 	if text.length() > 0:
 		line.clear()
-		var msg := await _send(text, Message.Directions.Right)
+		var msg := _send(text, Message.Directions.Right)
 		var res := await GameSocket.answer_question(text)
 		msg.state = Message.State.Correct if res["correct"] else Message.State.Wrong
 
 func _on_answer_received(res:Dictionary):
 	if int(res["player"]) != Global.user.id:
-		var msg := await _send(res["answer"], Message.Directions.Left)
+		var msg := _send(res["answer"], Message.Directions.Left)
 		msg.state = Message.State.Correct if res["correct"] else Message.State.Wrong
 
 func _send(answer:String, direction:Message.Directions) -> Message:
@@ -155,7 +155,6 @@ func _send(answer:String, direction:Message.Directions) -> Message:
 	msg.text = answer
 	msg_history.add_child(msg)
 	msg.show()
-	#await get_tree().physics_frame
 	return msg
 
 func _scroll_length_changed():
