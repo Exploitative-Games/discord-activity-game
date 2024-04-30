@@ -29,6 +29,7 @@ func _connect_signals():
 	GameSocket.game_quiz_start_received.connect(Callable(self, "_on_game_quiz_start"))
 	GameSocket.answer_received.connect(Callable(self, "_on_answer_received"))
 	GameSocket.turn_change_received.connect(Callable(self, "_on_turn_change"))
+	$Messages/VBoxContainer/Panel/ScrollContainer.get_v_scroll_bar().changed.connect(_scroll_length_changed)
 
 func _update_players():
 	#for player in Global.lobby.players:
@@ -57,6 +58,7 @@ func _ready() -> void:
 func load_lobby():
 	Global.main_menu.hide()
 	show()
+	line.clear()
 	line.editable = false
 	await Global.lobby_loaded
 	_update_players()
@@ -87,6 +89,9 @@ func _on_game_start_countdown_cancel(_res:Dictionary):
 	timer = null
 	counter = null
 	$Messages/VBoxContainer/Panel/Counter.text = "waiting for another player"
+	$Messages/VBoxContainer/Question.text = ""
+	for msg in $Messages/VBoxContainer/Panel/ScrollContainer/VBoxContainer.get_children():
+		msg.queue_free()
 
 func _on_game_quiz_start(res:Dictionary):
 	category_select.hide()
@@ -95,7 +100,7 @@ func _on_game_quiz_start(res:Dictionary):
 	if int(res["current_player"]) == Global.user.id:
 		line.editable = true
 		countdown = int(res["question_cooldown"])
-		_timer($Messages/VBoxContainer/Panel/Timer/Label, countdown)
+		_timer($Messages/VBoxContainer/Panel/Timer/Label, countdown * 2)
 
 func _physics_process(_delta: float) -> void:
 	if timer != null:
@@ -109,17 +114,18 @@ func _on_player_joined(res:Dictionary):
 	player_1.get_node("VBoxContainer/handle").text = "@" + new_player.handle
 	player_1.get_node("Avatar").texture = await Global.get_avatar(new_player)
 
-var tflag:int = 0
+#var tflag:int = 0
 func _timer(label:Label, secs:int) -> void:
-	tflag += 1
+	#tflag += 1
 	counter = label
 	timer = get_tree().create_timer(secs)
 	await timer.timeout
-	if tflag > 0:
-		return
-	counter = null
-	timer = null
-	tflag = 0
+	return
+	#if tflag > 0:
+		#return
+	#counter = null
+	#timer = null
+	#tflag = 0
 
 func _on_category_selected(idx:int):
 	container.get_child(selected_category).get_node("Right Arrow").hide()
@@ -148,10 +154,12 @@ func _send(answer:String, direction:Message.Directions) -> Message:
 	msg.direction = direction
 	msg.text = answer
 	msg_history.add_child(msg)
-	await get_tree().physics_frame
 	msg.show()
-	$Messages/VBoxContainer/Panel/ScrollContainer.set_deferred("scroll_vertical", 9999999999)
+	#await get_tree().physics_frame
 	return msg
+
+func _scroll_length_changed():
+	$Messages/VBoxContainer/Panel/ScrollContainer.scroll_vertical = 99999999
 
 func _on_turn_change(res:Dictionary):
 	if int(res["current_player"]) == Global.user.id:
@@ -159,4 +167,5 @@ func _on_turn_change(res:Dictionary):
 		_timer($Messages/VBoxContainer/Panel/Timer/Label, countdown)
 	else:
 		line.editable = false
+		line.clear()
 		
