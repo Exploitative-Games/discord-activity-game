@@ -19,6 +19,7 @@ signal game_start_countdown_start_received(res:Dictionary)
 signal game_start_countdown_cancel_received(res:Dictionary)
 signal game_quiz_start_received(res:Dictionary)
 signal turn_change_received(res:Dictionary)
+signal game_end_received(res:Dictionary)
 
 # regularly called ping signal to maintain the socket connection
 signal ping_received
