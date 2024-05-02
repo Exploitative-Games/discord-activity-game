@@ -35,11 +35,22 @@ def main():
     if res == "Add question":
         updateCategories()
         question = questionary.text("Enter the question").ask()
-        category = questionary.autocomplete("Select category", choices={k for k in categories}).ask()
+
+        if len(categories) == 0:
+            category = questionary.text("Enter the category").ask()
+        else:
+            category = questionary.autocomplete("Select category", choices={k for k in categories}).ask()
         answers = questionary.text("Enter the answers. Seperate with comma").ask()
         
         if answers == "Cancelled by user":
             main()
+
+        
+        if category not in categories:
+            addCategory(category)
+            print("Added category ", category)
+
+        updateCategories()
 
         print(addQuestion(question, categories[category], answers))
     elif res == "Add category":
